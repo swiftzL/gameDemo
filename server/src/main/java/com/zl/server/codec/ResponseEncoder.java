@@ -14,6 +14,7 @@ public class ResponseEncoder extends MessageToByteEncoder<Response> {
     protected void encode(ChannelHandlerContext ctx, Response msg, ByteBuf out) throws Exception {
         out.writeInt(Constants.FLAG);
         out.writeInt(msg.getRequestId());
+        out.writeInt(msg.getStatusCode());
         out.writeInt(msg.getContent().length);
         out.writeBytes(msg.getContent());
     }

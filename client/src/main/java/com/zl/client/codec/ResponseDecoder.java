@@ -1,9 +1,8 @@
-package com.zl.server.codec;
+package com.zl.client.codec;
 
-import com.zl.server.commons.Constants;
-import com.zl.server.commons.Request;
+import com.zl.client.common.Response;
+import com.zl.common.common.Constants;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import lombok.extern.slf4j.Slf4j;
@@ -11,12 +10,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/**
- * flag-requestId-command-len-bytes
- * 4-4-4-4-
- */
 @Slf4j
-public class RequestDecoder extends ByteToMessageDecoder {
+public class ResponseDecoder extends ByteToMessageDecoder {
+
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
         if (in.readableBytes()<16) {
@@ -28,7 +24,7 @@ public class RequestDecoder extends ByteToMessageDecoder {
             log.error("错误请求");
         }
         int requestId = in.readInt();
-        int command = in.readInt();
+        int statusCode = in.readInt();
         int len = in.readInt();
         if(in.readableBytes()<len){
             in.resetReaderIndex();
@@ -36,10 +32,11 @@ public class RequestDecoder extends ByteToMessageDecoder {
         }
         byte[] bytes = new byte[len];
         in.readBytes(bytes);
-        Request request = new Request();
-        request.setRequestId(requestId);
-        request.setCommand(command);
-        request.setContent(bytes);
-        out.add(request);
+        Response response = new Response();
+        response.setRequestId(requestId);
+        response.setStatusCode(statusCode);
+        response.setContent(bytes);
+        out.add(response);
+        System.out.println(response);
     }
 }

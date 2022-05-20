@@ -11,11 +11,10 @@ public class Response {
 
     private int requestId;
     private int statusCode;
-    private String message;
     private byte[] content;
 
     public static Response err(String message) {
-        return new Response(1, 500, message, null);
+        return new Response(1, 500, message.getBytes());
     }
 
 }

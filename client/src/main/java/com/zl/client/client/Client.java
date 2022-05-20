@@ -2,6 +2,7 @@ package com.zl.client.client;
 
 import com.alibaba.fastjson.JSON;
 import com.zl.client.common.Request;
+import com.zl.client.function.Function;
 import com.zl.common.common.Command;
 
 import com.zl.common.model.AccountDto;
@@ -11,11 +12,12 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.LongAdder;
-import java.util.function.Function;
 
 @Component
 public class Client {
@@ -23,21 +25,15 @@ public class Client {
     @Autowired
     private Channel channel;
 
-    private Map<Integer, Runnable> functions = new HashMap<>();
-    private  Scanner scanner = new Scanner(System.in);
-    private AtomicInteger atomicInteger = new AtomicInteger();
+    @Autowired
+    private List<Function>  functions;
+
+    @Autowired
+    private Scanner scanner;
 
     @PostConstruct
     public void init(){
-        functions.put(1,()->{
-
-        });
-
-        functions.put(2,()->{
-
-        });
-
-
+        this.functions.sort((e1,e2)->e1.getCode()-e2.getCode());
     }
 
     public void printFunction() {
@@ -48,16 +44,16 @@ public class Client {
     }
 
 
-    public void run() {
+    public void run() throws ExecutionException, InterruptedException {
         printFunction();
 
         while (scanner.hasNext()) {
             int code = scanner.nextInt();
+            scanner.nextLine();
+            functions.get(code-1).run();
             if (code == 100) {
                 return;
             }
-
-
         }
 
     }

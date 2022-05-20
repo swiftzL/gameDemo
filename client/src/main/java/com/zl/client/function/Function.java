@@ -4,8 +4,9 @@ import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
 
-public abstract class Function implements Runnable, FunctionAware {
+public abstract class Function {
     @Autowired
     Scanner scanner;
 
@@ -13,6 +14,8 @@ public abstract class Function implements Runnable, FunctionAware {
     Channel channel;
 
 
-    abstract int getCode();
+    public abstract int getCode();
+
+    public abstract void run() throws ExecutionException, InterruptedException;
 
 }

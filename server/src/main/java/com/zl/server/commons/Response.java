@@ -9,13 +9,24 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Response {
 
+    private static ThreadLocal<Integer> threadLocal = new ThreadLocal();
+
     private int requestId;
     private int statusCode;
-    private String message;
     private byte[] content;
 
-    public static Response err(String message) {
-        return new Response(1, 500, message, null);
+
+    public static void setRequestId(Integer id){
+        threadLocal.set(id);
     }
+
+    public static Response err(String message) {
+        return new Response(threadLocal.get(), 500, message.getBytes());
+    }
+
+    public static Response success(String message) {
+        return new Response(threadLocal.get(), 200, message.getBytes());
+    }
+
 
 }

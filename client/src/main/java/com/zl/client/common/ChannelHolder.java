@@ -9,11 +9,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 public class ChannelHolder {
-    private static Map<String, CompletableFuture> responseMap = new ConcurrentHashMap<>();
-    public static CompletableFuture getFuture(String requestId) {
+    private static Map<Integer, CompletableFuture> responseMap = new ConcurrentHashMap<>();
+    public static CompletableFuture getFuture(Integer requestId) {
         return responseMap.get(requestId);
     }
-    public static void completable(String requestId, Object o) {
+    public static void completable(Integer requestId, Object o) {
         //remove the requestId and return future
         CompletableFuture completableFuture = responseMap.remove(requestId);
         if (completableFuture != null) {
@@ -24,11 +24,11 @@ public class ChannelHolder {
         }
     }
 
-    public static void remove(String requestId) {
+    public static void remove(Integer requestId) {
         responseMap.remove(requestId);
     }
 
-    public static void put(String requestId, CompletableFuture completableFuture) {
+    public static void put(Integer requestId, CompletableFuture completableFuture) {
         responseMap.put(requestId, completableFuture);
     }
 

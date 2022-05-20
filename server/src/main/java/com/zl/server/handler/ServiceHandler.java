@@ -4,15 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.zl.server.commons.Request;
 import com.zl.server.commons.Response;
 import com.zl.server.config.NetMessageProcessor;
-import com.zl.server.proxy.Invoke;
+import com.zl.server.netty.Invoke;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-@Component
 public class ServiceHandler extends ChannelInboundHandlerAdapter {
 
     private Map<Integer, Invoke> invokes = NetMessageProcessor.invokes;
@@ -20,6 +18,7 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         Request request = (Request) msg;
+        Response.setRequestId(request.getRequestId()); //设置请求id
         Invoke invoke = invokes.get(request.getCommand());
         if (invoke == null) {
             ctx.channel().writeAndFlush(Response.err("指令错误"));
@@ -49,6 +48,7 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
             response.setStatusCode(200);
             response.setContent(JSON.toJSONString(obj).getBytes());
         }
+        response.setRequestId(request.getRequestId());
         ctx.channel().writeAndFlush(response);
     }
 

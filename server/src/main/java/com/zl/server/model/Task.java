@@ -9,20 +9,14 @@ import javax.persistence.Table;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
-
 @Data
 @Entity
-@Table(name = "accounts")
-public class Account {
+@Table(name = "tasks")
+public class Task {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Integer id;
 
-    private String username;
-
-    private String password;
-
-    private Integer level;
-
+    private String data;
 }

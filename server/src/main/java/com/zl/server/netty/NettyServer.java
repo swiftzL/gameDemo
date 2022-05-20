@@ -27,8 +27,7 @@ public class NettyServer {
     @Qualifier("workEventLoopGroup")
     private EventLoopGroup workGroup;
 
-    @Autowired
-    private ChannelInitializer channelInitializer;
+
 
     private ServerBootstrap serverBootstrap;
 
@@ -36,7 +35,7 @@ public class NettyServer {
     public void init() {
         ServerBootstrap serverBootstrap = new ServerBootstrap();
         serverBootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
-        serverBootstrap.group(bossGroup, workGroup).channel(NioServerSocketChannel.class).childHandler(channelInitializer);
+        serverBootstrap.group(bossGroup, workGroup).channel(NioServerSocketChannel.class).childHandler(new ServerHandlerInitial());
         this.serverBootstrap = serverBootstrap;
     }
 
