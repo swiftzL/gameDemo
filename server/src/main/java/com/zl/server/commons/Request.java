@@ -7,5 +7,5 @@ public class Request {
 
     private int requestId;
     private int command;
-    private byte[] content;
+    private Object content;
 }

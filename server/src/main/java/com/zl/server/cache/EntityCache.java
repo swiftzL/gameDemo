@@ -9,13 +9,13 @@ import javax.persistence.EntityManager;
 public class EntityCache<PK, T> implements Cache<PK, T> {
 
     private Class<?> entityClass;
-    private EntityManager entityManager;
+    private EntityManagerContext entityManagerContext;
     private LoadingCache<PK, T> cache;
     private Persist persist;
 
     //持久层
-    public EntityCache(Class<?> entityClass, EntityManager entityManager, Persist persist) {
-        this.entityManager = entityManager;
+    public EntityCache(Class<?> entityClass, EntityManagerContext context, Persist persist) {
+        this.entityManagerContext = context;
         this.entityClass = entityClass;
         this.persist = persist;
         this.cache = Caffeine.newBuilder().writer(createCacheWriter()).build(createCacheLoader());
@@ -35,7 +35,7 @@ public class EntityCache<PK, T> implements Cache<PK, T> {
         return new CacheWriter<PK, T>() {
             @Override
             public void write(PK pk, T t) {
-                persist.put(pk, t);
+                persist.put(t);
             }
 
             @Override
@@ -47,7 +47,7 @@ public class EntityCache<PK, T> implements Cache<PK, T> {
 
 
     private T loadEntity(PK pk) {
-        T o = (T) entityManager.find(entityClass, pk);
+        T o = (T) entityManagerContext.find(entityClass, pk);
         return o;
     }
 
@@ -77,8 +77,8 @@ public class EntityCache<PK, T> implements Cache<PK, T> {
         cache.put(id, t);
     }
 
-    public void writeBack(PK pk, T t) {
-        persist.put(pk, t);
+    public void writeBack(T t) {
+        persist.put(t);
     }
 
 

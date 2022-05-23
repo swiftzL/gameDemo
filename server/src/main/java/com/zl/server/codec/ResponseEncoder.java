@@ -1,5 +1,6 @@
 package com.zl.server.codec;
 
+import com.alibaba.fastjson.JSON;
 import com.zl.server.commons.Constants;
 import com.zl.server.commons.Response;
 import io.netty.buffer.ByteBuf;
@@ -15,7 +16,8 @@ public class ResponseEncoder extends MessageToByteEncoder<Response> {
         out.writeInt(Constants.FLAG);
         out.writeInt(msg.getRequestId());
         out.writeInt(msg.getStatusCode());
-        out.writeInt(msg.getContent().length);
-        out.writeBytes(msg.getContent());
+        String s = JSON.toJSONString(msg.getContent());
+        out.writeInt(s.getBytes().length);
+        out.writeBytes(s.getBytes());
     }
 }

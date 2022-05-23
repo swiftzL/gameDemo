@@ -1,6 +1,7 @@
 package com.zl.server.config;
 
 
+import com.zl.common.message.NetMessage;
 import com.zl.server.anno.NetMessageHandler;
 import com.zl.server.anno.NetMessageInvoke;
 import com.zl.server.commons.Command;
@@ -19,23 +20,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class NetMessageProcessor implements  BeanFactoryAware, ApplicationRunner {
+public class NetMessageProcessor implements BeanFactoryAware, ApplicationRunner {
     public static Map<Integer, Invoke> invokes = new HashMap<>();
+    public static Map<Integer, Class<?>> commandToClass = new HashMap<>();
 
     private ConfigurableListableBeanFactory beanFactory;
 
 
-
-
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-        this.beanFactory = (ConfigurableListableBeanFactory)beanFactory;
+        this.beanFactory = (ConfigurableListableBeanFactory) beanFactory;
     }
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         Map<String, Object> objectMap = this.beanFactory.getBeansWithAnnotation(NetMessageHandler.class);
-        objectMap.forEach((name,bean)->{
+        objectMap.forEach((name, bean) -> {
             Class<?> clazz = beanFactory.getType(name);
             Method[] methods = clazz.getDeclaredMethods();
             for (Method method : methods) {
@@ -43,8 +43,19 @@ public class NetMessageProcessor implements  BeanFactoryAware, ApplicationRunner
                 if (netMessageInvoke == null) {
                     continue;
                 }
+                Class<?> msgClass = null;
+                for (Class<?> paramType : method.getParameterTypes()) {
+                    if (NetMessage.class.isAssignableFrom(paramType)) {
+                        msgClass = paramType;
+                        break;
+                    }
+                }
+//                if (msgClass == null) {
+//                    throw new RuntimeException("msgClass is not null" + method);
+//                }
                 Command command = netMessageInvoke.value();
                 invokes.put(command.getCode(), new ObjectInvoke(bean, method));
+                commandToClass.put(command.getCode(), msgClass);
             }
         });
 

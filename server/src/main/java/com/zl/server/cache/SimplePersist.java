@@ -1,65 +1,72 @@
 package com.zl.server.cache;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
+import java.util.Deque;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
+import java.util.Set;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Component
+@Slf4j
 public class SimplePersist implements Persist {
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    private Map<Integer, Object> elements = new ConcurrentHashMap<>();
+    @Autowired
+    private EntityManagerContext entityManagerContext;
+    private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
+    private Deque<Object> elements = new ConcurrentLinkedDeque<>();
     private Lock lock = new ReentrantLock();
     private volatile boolean running = true;
 
 
     @Override
     public void destroy() {
-
+        this.running = false;
+        executorService.shutdown();
     }
 
     @Override
-    public Object get(Object id) {
-        return elements.get((Integer) id);
+    public void put(Object obj) {
+        elements.addLast(obj);
     }
 
-    @Override
-    public void put(Object id, Object obj) {
-        elements.put((Integer) id, obj);
-    }
-
-
-
-    @Transactional
     public void persist(Object obj) {
-        this.entityManager.persist(obj);
+        log.info("persisting");
+        this.entityManagerContext.persist(obj);
+        log.info("persisted");
     }
 
     @Override
     public void run() {
-
-        while (running){
+        if (running && !elements.isEmpty()) {
             lock.lock();
-            elements.forEach((k, v) -> {
-                persist(v);
-                elements.remove(k);
-            });
-
+            Object obj = elements.removeFirst();
+            log.info("persist {}",obj);
             lock.unlock();
             try {
-                TimeUnit.SECONDS.sleep(5);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                persist(obj);
+            }catch (Exception e){
+                System.out.println(e);
             }
         }
     }
+
+    @PostConstruct
+    public void init() {
+
+        executorService.scheduleWithFixedDelay(this, 15, 15, TimeUnit.SECONDS);
+        log.info("Persist started");
+    }
+
+
 }

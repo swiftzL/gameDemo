@@ -4,9 +4,8 @@ public interface Persist extends Runnable {
 
     void destroy();
 
-    Object get(Object id);
 
-    void put(Object id, Object obj);
+    void put(Object obj);
 
 
 }
