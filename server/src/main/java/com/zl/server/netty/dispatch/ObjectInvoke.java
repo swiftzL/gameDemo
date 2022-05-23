@@ -1,6 +1,7 @@
-package com.zl.server.netty;
+package com.zl.server.netty.dispatch;
 
 
+import com.zl.server.netty.dispatch.Invoke;
 import com.zl.server.netty.model.Response;
 
 import java.lang.reflect.InvocationTargetException;

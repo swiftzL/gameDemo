@@ -1,4 +1,4 @@
-package com.zl.server.netty;
+package com.zl.server.netty.config;
 
 
 import com.zl.server.netty.codec.RequestDecoder;

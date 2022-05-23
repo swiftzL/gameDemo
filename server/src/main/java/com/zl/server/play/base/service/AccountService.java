@@ -1,6 +1,6 @@
 package com.zl.server.play.base.service;
 
-import com.zl.server.netty.NetConnection;
+import com.zl.server.netty.connection.NetConnection;
 import com.zl.server.play.base.packet.MR_Response;
 import com.zl.server.play.base.packet.MS_Account;
 

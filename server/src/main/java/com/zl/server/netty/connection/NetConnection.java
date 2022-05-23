@@ -1,4 +1,4 @@
-package com.zl.server.netty;
+package com.zl.server.netty.connection;
 
 import com.zl.common.message.NetMessage;
 import com.zl.server.netty.model.Response;

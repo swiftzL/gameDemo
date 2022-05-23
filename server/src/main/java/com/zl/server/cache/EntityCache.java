@@ -14,22 +14,21 @@ public class EntityCache<PK, T> implements Cache<PK, T> {
     private EntityManagerContext entityManagerContext;
     private LoadingCache<PK, T> cache;
     private Persist persist;
+    private Class<?> cacheClass;
 
     //持久层
-    public EntityCache(Class<?> entityClass, EntityManagerContext context, Persist persist) {
+    public EntityCache(Class<?> entityClass, EntityManagerContext context, Persist persist, Class<?> cacheClass) {
         this.entityManagerContext = context;
         this.entityClass = entityClass;
         this.persist = persist;
         this.cache = Caffeine.newBuilder().writer(createCacheWriter()).build(createCacheLoader());
+        this.cacheClass = cacheClass;
     }
 
     private CacheLoader<PK, T> createCacheLoader() {
-        return new CacheLoader<PK, T>() {
-            @Override
-            public T load(PK pk) throws Exception {
-                T entity = loadEntity(pk);
-                return entity;
-            }
+        return pk -> {
+            T entity = loadEntity(pk);
+            return entity;
         };
     }
 
@@ -50,14 +49,10 @@ public class EntityCache<PK, T> implements Cache<PK, T> {
 
     private T loadEntity(PK pk) {
         T o = (T) entityManagerContext.find(entityClass, pk);
-        if (AbstractBlobModelEntity.class.isAssignableFrom(this.entityClass)) {
+        if (this.cacheClass != null) {
             AbstractBlobModelEntity abstractBlobModelEntity = (AbstractBlobModelEntity) o;
             String data = abstractBlobModelEntity.getData();
-            Class<?> clazz = abstractBlobModelEntity.getClazz();
-            if(abstractBlobModelEntity.isArray()){
-                abstractBlobModelEntity.setMode(JSON.parseArray(data, clazz));
-            }
-            abstractBlobModelEntity.setMode(JSON.parseObject(data, clazz));
+            abstractBlobModelEntity.setMode(JSON.parseObject(data, cacheClass));
         }
         return o;
     }

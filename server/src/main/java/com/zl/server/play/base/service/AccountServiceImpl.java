@@ -1,29 +1,32 @@
 package com.zl.server.play.base.service;
 
+import com.zl.server.cache.anno.Storage;
 import com.zl.server.netty.anno.NetMessageInvoke;
 import com.zl.server.cache.EntityCache;
 import com.zl.server.commons.Command;
 import com.zl.server.play.base.dao.AccountDao;
 
 
-import com.zl.server.netty.NetConnection;
+import com.zl.server.netty.connection.NetConnection;
 import com.zl.server.play.base.model.Account;
 import com.zl.server.play.base.packet.MR_Response;
 import com.zl.server.play.base.packet.MS_Account;
+import com.zl.server.play.quest.event.QuestEvent;
+import com.zl.server.play.quest.event.QuestEventType;
 import io.netty.util.AttributeKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AccountServiceImpl implements AccountService {
 
     @Autowired
-    AccountDao accountDao;
-
-
+    private AccountDao accountDao;
     @Autowired
-    @Qualifier("accountEntityCache")
+    private ApplicationContext applicationContext;
+    @Storage
     EntityCache<Integer, Account> entityCache;
 
     @NetMessageInvoke(Command.Login)
@@ -68,7 +71,7 @@ public class AccountServiceImpl implements AccountService {
         }
         Account account = entityCache.load(id);
         account.setLevel(account.getLevel() + 1);
-//        eventBroadCast.publish(Event.LEVEL, id.get());
+        applicationContext.publishEvent(QuestEvent.valueOf(id, QuestEventType.LevelUP.getCode()));
         entityCache.writeBack(account);
         return new MR_Response("升级成功");
     }

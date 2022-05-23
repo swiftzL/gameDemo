@@ -1,4 +1,4 @@
-package com.zl.server.netty;
+package com.zl.server.netty.dispatch;
 
 import java.lang.reflect.InvocationTargetException;
 

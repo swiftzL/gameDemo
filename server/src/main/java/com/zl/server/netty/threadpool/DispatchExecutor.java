@@ -1,13 +1,7 @@
 package com.zl.server.netty.threadpool;
 
-import io.netty.util.concurrent.DefaultEventExecutorChooserFactory;
-import io.netty.util.concurrent.EventExecutor;
-import io.netty.util.concurrent.EventExecutorChooserFactory;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Deque;
-import java.util.LinkedList;
-import java.util.concurrent.LinkedBlockingDeque;
 
 @Slf4j
 public class DispatchExecutor implements Executor {
@@ -42,37 +36,36 @@ public class DispatchExecutor implements Executor {
     }
 
     class Work implements Runnable {
-        private Deque<Runnable> deque = new LinkedList<>();
         private volatile boolean running = true;
+        private volatile Runnable task = null;
 
         @Override
         public void run() {
-            Runnable task = null;
             while (running) {
-                while (deque.isEmpty()) {
-                    synchronized (deque) {
+                synchronized (this) {
+                    if (task == null) {
                         try {
-                            deque.wait();
+                            this.wait();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
-                            return;
                         }
                     }
+                    try {
+                        task.run();
+                        task = null;
+                    } catch (Exception e) {
+                        log.error("job exception" + e);
+                    }
                 }
-                task = deque.pollFirst();
 
-                try {
-                    task.run();
-                } catch (Exception e) {
-                    log.error("job exception" + e);
-                }
+
             }
         }
 
         private void addTask(Runnable task) {
-            synchronized (deque) {
-                this.deque.addLast(task);
-                this.deque.notifyAll();
+            synchronized (this) {
+                this.task = task;
+                this.notifyAll();
             }
         }
 
@@ -87,7 +80,7 @@ public class DispatchExecutor implements Executor {
 
     public Chooser newChooser(int threadSize) {
         if (isPowerOfTwo(threadSize)) {
-            return (id) -> id & threadSize - 1;
+            return (id) -> id & (threadSize - 1);
         } else {
             return (id) -> id % threadSize;
         }

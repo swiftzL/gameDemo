@@ -3,7 +3,7 @@ package com.zl.server.play.base.facade;
 import com.zl.server.netty.anno.NetMessageHandler;
 import com.zl.server.netty.anno.NetMessageInvoke;
 import com.zl.server.commons.Command;
-import com.zl.server.netty.NetConnection;
+import com.zl.server.netty.connection.NetConnection;
 import com.zl.server.play.base.packet.MR_Response;
 import com.zl.server.play.base.packet.MS_Account;
 import com.zl.server.play.base.service.AccountService;

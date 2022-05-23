@@ -4,8 +4,8 @@ import com.zl.common.message.NetMessage;
 import com.zl.server.netty.model.Request;
 import com.zl.server.netty.model.Response;
 import com.zl.server.netty.config.NetMessageProcessor;
-import com.zl.server.netty.Invoke;
-import com.zl.server.netty.NetConnection;
+import com.zl.server.netty.dispatch.Invoke;
+import com.zl.server.netty.connection.NetConnection;
 import com.zl.server.netty.threadpool.DispatchExecutor;
 import com.zl.server.netty.threadpool.Executor;
 import com.zl.server.netty.threadpool.Task;
@@ -14,14 +14,10 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.Attribute;
-import io.netty.util.AttributeKey;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class ServiceHandler extends ChannelInboundHandlerAdapter {

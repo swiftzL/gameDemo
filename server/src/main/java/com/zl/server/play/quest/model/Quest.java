@@ -1,6 +1,7 @@
 package com.zl.server.play.quest.model;
 
 import com.zl.server.commons.AbstractBlobModelEntity;
+import com.zl.server.play.quest.packet.QuestBox;
 import com.zl.server.play.quest.packet.QuestDto;
 import lombok.Data;
 
@@ -13,15 +14,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Data
 @Entity
 @Table(name = "quests")
-public class Quest extends AbstractBlobModelEntity<List<QuestDto>> {
+public class Quest extends AbstractBlobModelEntity<QuestBox> {
 
-    @Override
-    public Class<?> getClazz() {
-        return QuestDto.class;
-    }
 
-    @Override
-    public boolean isArray() {
-        return true;
-    }
 }

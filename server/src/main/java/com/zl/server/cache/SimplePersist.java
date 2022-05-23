@@ -34,6 +34,9 @@ public class SimplePersist implements Persist {
     @Override
     public void destroy() {
         this.running = false;
+        for (Object obj : elements) {
+            persist(obj);
+        }
         executorService.shutdown();
     }
 

@@ -34,6 +34,4 @@ public abstract class AbstractBlobModelEntity<M> {
     public String getData() {
         return data;
     }
-    public abstract Class<?> getClazz();
-    public abstract boolean isArray();
 }

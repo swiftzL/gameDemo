@@ -12,15 +12,5 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class CacheConfig {
 
-    @Bean
-    @Qualifier("taskEntityCache")
-    public EntityCache taskEntityCache(EntityManagerContext context, Persist persist) {
-        return new EntityCache<>(Quest.class, context, persist);
-    }
 
-    @Bean
-    @Qualifier("accountEntityCache")
-    public  EntityCache accountEntityCache(EntityManagerContext context,Persist persist){
-        return new EntityCache(Account.class,context,persist);
-    }
 }
