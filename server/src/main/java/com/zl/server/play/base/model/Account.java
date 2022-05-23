@@ -1,4 +1,4 @@
-package com.zl.server.model;
+package com.zl.server.play.base.model;
 
 import lombok.Data;
 

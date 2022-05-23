@@ -1,6 +1,8 @@
 package com.zl.server.cache;
 
+import com.alibaba.fastjson.JSON;
 import com.github.benmanes.caffeine.cache.*;
+import com.zl.server.commons.AbstractBlobModelEntity;
 import lombok.Data;
 
 import javax.persistence.EntityManager;
@@ -48,6 +50,15 @@ public class EntityCache<PK, T> implements Cache<PK, T> {
 
     private T loadEntity(PK pk) {
         T o = (T) entityManagerContext.find(entityClass, pk);
+        if (AbstractBlobModelEntity.class.isAssignableFrom(this.entityClass)) {
+            AbstractBlobModelEntity abstractBlobModelEntity = (AbstractBlobModelEntity) o;
+            String data = abstractBlobModelEntity.getData();
+            Class<?> clazz = abstractBlobModelEntity.getClazz();
+            if(abstractBlobModelEntity.isArray()){
+                abstractBlobModelEntity.setMode(JSON.parseArray(data, clazz));
+            }
+            abstractBlobModelEntity.setMode(JSON.parseObject(data, clazz));
+        }
         return o;
     }
 
@@ -68,6 +79,7 @@ public class EntityCache<PK, T> implements Cache<PK, T> {
             if (entity == null) {
                 entity = loadEntity(pk);
             }
+
             return entity;
         });
     }

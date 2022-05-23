@@ -1,15 +1,13 @@
-package com.zl.server.config;
+package com.zl.server.cache.config;
 
 import com.zl.server.cache.EntityCache;
 import com.zl.server.cache.EntityManagerContext;
 import com.zl.server.cache.Persist;
-import com.zl.server.model.Account;
-import com.zl.server.model.Task;
+import com.zl.server.play.base.model.Account;
+import com.zl.server.play.quest.model.Quest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.persistence.EntityManager;
 
 @Configuration
 public class CacheConfig {
@@ -17,7 +15,7 @@ public class CacheConfig {
     @Bean
     @Qualifier("taskEntityCache")
     public EntityCache taskEntityCache(EntityManagerContext context, Persist persist) {
-        return new EntityCache<>(Task.class, context, persist);
+        return new EntityCache<>(Quest.class, context, persist);
     }
 
     @Bean

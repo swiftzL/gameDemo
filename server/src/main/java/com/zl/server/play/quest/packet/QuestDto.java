@@ -1,4 +1,4 @@
-package com.zl.server.dto;
+package com.zl.server.play.quest.packet;
 
 import lombok.Data;
 

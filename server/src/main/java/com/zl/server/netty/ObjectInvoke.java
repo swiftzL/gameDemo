@@ -1,7 +1,7 @@
 package com.zl.server.netty;
 
 
-import com.zl.server.commons.Response;
+import com.zl.server.netty.model.Response;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

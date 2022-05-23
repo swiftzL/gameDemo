@@ -1,9 +1,9 @@
-package com.zl.server.config;
+package com.zl.server.netty.config;
 
 
 import com.zl.common.message.NetMessage;
-import com.zl.server.anno.NetMessageHandler;
-import com.zl.server.anno.NetMessageInvoke;
+import com.zl.server.netty.anno.NetMessageHandler;
+import com.zl.server.netty.anno.NetMessageInvoke;
 import com.zl.server.commons.Command;
 import com.zl.server.netty.Invoke;
 import com.zl.server.netty.ObjectInvoke;

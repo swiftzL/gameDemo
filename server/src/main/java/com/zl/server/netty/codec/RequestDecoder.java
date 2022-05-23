@@ -1,15 +1,13 @@
-package com.zl.server.codec;
+package com.zl.server.netty.codec;
 
 import com.alibaba.fastjson.JSON;
 import com.zl.server.commons.Constants;
-import com.zl.server.commons.Request;
-import com.zl.server.config.NetMessageProcessor;
+import com.zl.server.netty.model.Request;
+import com.zl.server.netty.config.NetMessageProcessor;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;

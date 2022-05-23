@@ -1,5 +1,7 @@
 package com.zl.server.cache;
 
+import com.alibaba.fastjson.JSON;
+import com.zl.server.commons.AbstractBlobModelEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContextAware;
@@ -42,6 +44,10 @@ public class SimplePersist implements Persist {
 
     public void persist(Object obj) {
         log.info("persisting");
+        if (obj instanceof AbstractBlobModelEntity) {
+            AbstractBlobModelEntity entity = (AbstractBlobModelEntity) obj;
+            entity.setData(JSON.toJSONString(entity.getModel()));
+        }
         this.entityManagerContext.persist(obj);
         log.info("persisted");
     }
@@ -51,11 +57,11 @@ public class SimplePersist implements Persist {
         if (running && !elements.isEmpty()) {
             lock.lock();
             Object obj = elements.removeFirst();
-            log.info("persist {}",obj);
+            log.info("persist {}", obj);
             lock.unlock();
             try {
                 persist(obj);
-            }catch (Exception e){
+            } catch (Exception e) {
                 System.out.println(e);
             }
         }
@@ -63,7 +69,6 @@ public class SimplePersist implements Persist {
 
     @PostConstruct
     public void init() {
-
         executorService.scheduleWithFixedDelay(this, 15, 15, TimeUnit.SECONDS);
         log.info("Persist started");
     }

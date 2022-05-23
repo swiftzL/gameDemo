@@ -1,15 +1,15 @@
-package com.zl.server.anno;
+package com.zl.server.netty.anno;
 
-import org.springframework.stereotype.Component;
+
+import com.zl.server.commons.Command;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
-@Target(ElementType.TYPE)
-@Component
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface NetMessageHandler {
+public @interface NetMessageInvoke {
+    Command value();
 }

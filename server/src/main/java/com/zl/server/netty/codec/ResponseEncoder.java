@@ -1,8 +1,8 @@
-package com.zl.server.codec;
+package com.zl.server.netty.codec;
 
 import com.alibaba.fastjson.JSON;
 import com.zl.server.commons.Constants;
-import com.zl.server.commons.Response;
+import com.zl.server.netty.model.Response;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;

@@ -1,7 +1,7 @@
-package com.zl.server.dao;
+package com.zl.server.play.base.dao;
 
 
-import com.zl.server.model.Account;
+import com.zl.server.play.base.model.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AccountDao extends JpaRepository<Account,Integer> {

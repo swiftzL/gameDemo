@@ -1,9 +1,9 @@
 package com.zl.server.netty;
 
 import com.zl.common.message.NetMessage;
-import com.zl.server.commons.Response;
+import com.zl.server.netty.model.Response;
 import io.netty.channel.Channel;
-import lombok.Data;
+import io.netty.util.AttributeKey;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class NetConnection {
     private volatile Channel channel;
     private Map<String, Object> attrs = new ConcurrentHashMap<>();
+    public static AttributeKey<NetConnection> netConnection = AttributeKey.valueOf("net_connection");
 
     public NetConnection(Channel channel){
         this.channel = channel;

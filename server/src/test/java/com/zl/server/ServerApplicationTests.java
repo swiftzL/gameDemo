@@ -1,18 +1,12 @@
 package com.zl.server;
 
-import com.zl.server.cache.EntityCache;
 import com.zl.server.cache.Persist;
-import com.zl.server.dao.AccountDao;
-import com.zl.server.dto.AccountDto;
-import com.zl.server.model.Account;
-import org.junit.jupiter.api.Test;
+import com.zl.server.play.base.dao.AccountDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 class ServerApplicationTests {

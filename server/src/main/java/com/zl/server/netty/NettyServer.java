@@ -1,6 +1,7 @@
 package com.zl.server.netty;
 
 
+import com.zl.server.netty.config.ServerConfig;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -15,9 +16,8 @@ import javax.annotation.PostConstruct;
 
 @Component
 public class NettyServer {
-
-    @Value("${gamedemo.port}")
-    private int port;
+    @Autowired
+    private ServerConfig serverConfig;
 
     @Autowired
     @Qualifier("bossEventLoopGroup")
@@ -26,7 +26,6 @@ public class NettyServer {
     @Autowired
     @Qualifier("workEventLoopGroup")
     private EventLoopGroup workGroup;
-
 
 
     private ServerBootstrap serverBootstrap;
@@ -40,6 +39,6 @@ public class NettyServer {
     }
 
     public void run() throws InterruptedException {
-        serverBootstrap.bind(this.port).sync();
+        serverBootstrap.bind(serverConfig.getHost(), serverConfig.getPort()).sync();
     }
 }
