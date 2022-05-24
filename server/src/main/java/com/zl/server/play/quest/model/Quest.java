@@ -2,7 +2,6 @@ package com.zl.server.play.quest.model;
 
 import com.zl.server.commons.AbstractBlobModelEntity;
 import com.zl.server.play.quest.packet.QuestBox;
-import com.zl.server.play.quest.packet.QuestDto;
 import lombok.Data;
 
 import javax.persistence.*;

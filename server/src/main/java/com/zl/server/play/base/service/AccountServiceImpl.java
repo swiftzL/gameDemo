@@ -71,7 +71,7 @@ public class AccountServiceImpl implements AccountService {
         }
         Account account = entityCache.load(id);
         account.setLevel(account.getLevel() + 1);
-        applicationContext.publishEvent(QuestEvent.valueOf(id, QuestEventType.LevelUP.getCode()));
+        applicationContext.publishEvent(QuestEvent.valueOf(id, null));
         entityCache.writeBack(account);
         return new MR_Response("升级成功");
     }

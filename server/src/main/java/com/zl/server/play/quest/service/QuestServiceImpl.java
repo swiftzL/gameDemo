@@ -6,23 +6,39 @@ import com.zl.server.cache.EntityCache;
 import com.zl.server.cache.anno.Storage;
 import com.zl.server.commons.Command;
 import com.zl.server.netty.anno.NetMessageInvoke;
+import com.zl.server.play.base.model.Account;
 import com.zl.server.play.quest.event.QuestEvent;
+import com.zl.server.play.quest.event.QuestEventType;
 import com.zl.server.play.quest.model.Quest;
 import com.zl.server.netty.connection.NetConnection;
 import com.zl.server.play.base.packet.MR_Response;
 import com.zl.server.play.quest.packet.QuestBox;
-import com.zl.server.play.quest.packet.QuestDto;
+import com.zl.server.play.quest.packet.QuestModel;
+import com.zl.server.resource.quest.QuestProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 public class QuestServiceImpl implements QuestService {
 
     @Storage
     private EntityCache<Integer, Quest> questEntityCache;
+    private Map<QuestEventType, QuestProcessor> questProcessorMap;
+    private Map<Integer, List<QuestBox>> idToQuest = new HashMap<>();
 
+    @Autowired
+    public void setQuestProcessorMap(Set<QuestProcessor> questProcessors) {
+        this.questProcessorMap = new HashMap<>();
+        for (QuestProcessor questProcessor : questProcessors) {
+            this.questProcessorMap.put(questProcessor.getQuestType(), questProcessor);
+        }
+    }
 
     public NetMessage showTask(NetConnection netConnection) {
         Integer id = netConnection.getAttr("id", Integer.class);
@@ -33,18 +49,25 @@ public class QuestServiceImpl implements QuestService {
         return quest.getModel();
     }
 
+
     @EventListener
-    public void handleQuestEvent(QuestEvent<Integer> questEvent) {
+    public void handleQuestEvent(QuestEvent questEvent) {
         Integer playerId = questEvent.getPlayerId();
         Quest quest = questEntityCache.loadOrCreate(playerId);
         QuestBox model = quest.getModel();
-        Integer params = questEvent.getParams();
-        for (QuestDto questDto : model.getQuestDtos()) {
-            if (params.equals(questDto.getTaskType())) {
-                questDto.setTaskStatus(1);
-                questEntityCache.writeBack(quest);
-                break;
+        Set<QuestEventType> questEventTypeSet = QuestEventType.getQuestEventTypeSet();
+        for (QuestEventType questEventType : questEventTypeSet) {
+            QuestProcessor questProcessor = getQuestProcessor(questEventType);
+            if (questProcessor == null) {
+                continue;
+            }
+            for (QuestModel questModel : model.getQuestModels()) {
+                questProcessor.finish(playerId, questModel.getTaskId(), quest, questModel);
             }
         }
+    }
+
+    public QuestProcessor getQuestProcessor(QuestEventType eventType) {
+        return questProcessorMap.get(eventType);
     }
 }

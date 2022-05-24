@@ -1,12 +1,17 @@
 package com.zl.server;
 
+import com.alibaba.fastjson.JSON;
 import com.zl.server.cache.Persist;
 import com.zl.server.play.base.dao.AccountDao;
+import com.zl.server.play.quest.packet.QuestBox;
+import com.zl.server.play.quest.packet.QuestModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootTest
 class ServerApplicationTests {
@@ -19,6 +24,23 @@ class ServerApplicationTests {
 
     @Autowired
     private Persist persist;
+
+    public static void main(String[] args) {
+        QuestBox questBox = new QuestBox();
+        List<QuestModel> list = new ArrayList<>();
+        QuestModel questModel = new QuestModel();
+        questModel.setCurrent(0);
+        questModel.setMaxCount(1);
+        questModel.setTaskStatus(1);
+        questModel.setTaskId(1);
+        questModel.setTaskType(1);
+        questModel.setTaskName("提升等级到14级");
+        questModel.setTaskStatus(0);
+        list.add(questModel);
+        questBox.setQuestModels(list);
+        System.out.println(JSON.toJSONString(questBox));
+
+    }
 
 
 //    @Test
