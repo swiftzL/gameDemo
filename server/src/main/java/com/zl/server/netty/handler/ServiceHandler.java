@@ -1,6 +1,7 @@
 package com.zl.server.netty.handler;
 
 import com.zl.common.message.NetMessage;
+import com.zl.server.netty.anno.Param;
 import com.zl.server.netty.model.Request;
 import com.zl.server.netty.model.Response;
 import com.zl.server.netty.config.NetMessageProcessor;
@@ -17,6 +18,7 @@ import io.netty.util.Attribute;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Parameter;
 import java.util.Map;
 
 @Slf4j
@@ -53,14 +55,19 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
         }
         Class[] argsType = invoke.getArgsType();
         Object[] args = new Object[argsType.length];
+        Parameter[] parameters = invoke.getParameters();
         for (int i = 0; i < args.length; i++) {
             Class clazz = argsType[i];
+            Parameter parameter = parameters[i];
             if (NetConnection.class.equals(clazz)) {
                 args[i] = netConnection;
             } else if (Request.class.equals(clazz)) {
                 args[i] = request;
             } else if (NetMessage.class.isAssignableFrom(clazz)) {
                 args[i] = request.getContent();
+            } else if (parameter.getAnnotation(Param.class)!=null) {
+               Param param = parameter.getAnnotation(Param.class);
+                args[i]=netConnection.getAttr(param.value());
             } else {
                 args[i] = null;
             }

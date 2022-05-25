@@ -13,18 +13,18 @@ public class NetConnection {
     private Map<String, Object> attrs = new ConcurrentHashMap<>();
     public static AttributeKey<NetConnection> netConnection = AttributeKey.valueOf("net_connection");
 
-    public NetConnection(Channel channel){
+    public NetConnection(Channel channel) {
         this.channel = channel;
     }
 
     public void sendMessage(NetMessage message) {
         Response response = new Response();
         response.setContent(message);
-        response.setRequestId(getAttr("requestId",Integer.class));
+        response.setRequestId(getAttr("requestId", Integer.class));
         this.channel.writeAndFlush(response);
     }
 
-    public void sendMessage(Response response){
+    public void sendMessage(Response response) {
         this.channel.writeAndFlush(response);
     }
 
@@ -32,7 +32,11 @@ public class NetConnection {
         return (T) attrs.get(key);
     }
 
-    public void setAttr(String key,Object value){
-        attrs.put(key,value);
+    public Object getAttr(String key) {
+        return attrs.get(key);
+    }
+
+    public void setAttr(String key, Object value) {
+        attrs.put(key, value);
     }
 }

@@ -1,6 +1,7 @@
 package com.zl.server.netty.dispatch;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Parameter;
 
 public interface Invoke {
 
@@ -11,4 +12,6 @@ public interface Invoke {
     boolean isVoid();
 
     boolean returnIsResponse();
+
+    Parameter[] getParameters();
 }

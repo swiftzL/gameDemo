@@ -15,6 +15,7 @@ public class ObjectInvoke implements Invoke {
     private Method method;
     private Class[] args;
     private boolean returnIsResponse;
+    private Parameter[] parameters;
 
     public ObjectInvoke(Object obj,Method method) {
         this.object = obj;
@@ -26,6 +27,7 @@ public class ObjectInvoke implements Invoke {
         }
         this.isVoid = method.getReturnType().getName().equals("void");
         this.returnIsResponse = method.getReturnType().equals(Response.class);
+        this.parameters = parameters;
     }
 
     @Override
@@ -46,5 +48,10 @@ public class ObjectInvoke implements Invoke {
     @Override
     public boolean returnIsResponse() {
         return this.returnIsResponse;
+    }
+
+    @Override
+    public Parameter[] getParameters() {
+        return this.parameters;
     }
 }
