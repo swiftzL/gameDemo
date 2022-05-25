@@ -4,7 +4,7 @@ import com.zl.server.cache.EntityCache;
 import com.zl.server.cache.anno.Storage;
 import com.zl.server.play.quest.event.QuestEventType;
 import com.zl.server.play.quest.model.Quest;
-import com.zl.server.play.quest.packet.QuestModel;
+import com.zl.server.play.quest.model.QuestModel;
 import com.zl.server.resource.quest.QuestCondition;
 import com.zl.server.resource.quest.QuestConfig;
 import com.zl.server.resource.quest.QuestProcessor;
@@ -21,17 +21,12 @@ import java.util.Map;
 @Slf4j
 public class MainQuestProcessor implements QuestProcessor {
 
-    private Map<Integer, QuestConfig> questConfigMap = new HashMap<>();
+    @Autowired
+    private QuestConfigManager questConfigManager;
+
     @Storage
     private EntityCache<Integer, Quest> entityCache;
 
-
-    @Autowired
-    public void setQuestConfigMap(List<QuestResource> list) {
-        for (QuestResource questResource : list) {
-            questConfigMap.put(questResource.getId(), questResource);
-        }
-    }
 
     @Override
     public QuestEventType getQuestType() {
@@ -39,13 +34,15 @@ public class MainQuestProcessor implements QuestProcessor {
     }
 
     @Override
-    public void finish(Integer playerId, int questId, Quest quest, QuestModel questModel) {
-        QuestConfig questConfig = this.questConfigMap.get(questId);
+    public void finish(Integer playerId, int questId, Quest quest, QuestModel questModel, Object resource) {
+        QuestConfig questConfig = questConfigManager.getconfig(questId);
         if (questConfig == null) {
             log.warn("questId" + questId + "is not found");
         }
         QuestCondition finishCondition = questConfig.getFinishCondition();
-        if (finishCondition.verify(playerId, questModel)) {
+        if (finishCondition.verify(playerId, questModel, resource)) {
+            questModel.setTaskStatus(1);
+            questModel.setCurrent(questModel.getCurrent() + 1);
             entityCache.writeBack(quest);
         }
     }

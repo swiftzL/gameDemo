@@ -21,6 +21,7 @@ public class QuestResource implements QuestConfig {
     private int type;
 
     private QuestCondition questCondition;
+    private QuestAction questAction;
 
     @Override
     public QuestCondition getFinishCondition() {

@@ -6,13 +6,13 @@ import org.springframework.context.ApplicationEvent;
 
 @Setter
 @Getter
-public class QuestEvent<T> extends ApplicationEvent {
+public class QuestEvent extends ApplicationEvent {
     public QuestEvent(Object source) {
         super(source);
     }
 
     private Integer playerId;
-    private T params;
+    private Object params;
 
     public static QuestEvent valueOf(Integer playerId, Object params) {
         QuestEvent event = new QuestEvent(playerId);

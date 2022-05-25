@@ -1,4 +1,4 @@
-package com.zl.server.play.quest.packet;
+package com.zl.server.play.quest.model;
 
 import lombok.Data;
 import lombok.Getter;

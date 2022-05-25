@@ -2,9 +2,11 @@ package com.zl.server;
 
 import com.alibaba.fastjson.JSON;
 import com.zl.server.cache.Persist;
+import com.zl.server.play.bag.model.BagModel;
 import com.zl.server.play.base.dao.AccountDao;
-import com.zl.server.play.quest.packet.QuestBox;
-import com.zl.server.play.quest.packet.QuestModel;
+import com.zl.server.play.quest.model.QuestBox;
+import com.zl.server.play.quest.model.QuestModel;
+import com.zl.server.resource.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -26,6 +28,13 @@ class ServerApplicationTests {
     private Persist persist;
 
     public static void main(String[] args) {
+        BagModel bagModel = new BagModel();
+        bagModel.setBagCap(100);
+        bagModel.setItems(new Item[100]);
+        System.out.println(JSON.toJSONString(bagModel));
+    }
+
+    public static void main2(String[] args) {
         QuestBox questBox = new QuestBox();
         List<QuestModel> list = new ArrayList<>();
         QuestModel questModel = new QuestModel();

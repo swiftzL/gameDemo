@@ -1,19 +1,15 @@
 package com.zl.server.play.quest.service;
 
-import com.alibaba.fastjson.JSON;
 import com.zl.common.message.NetMessage;
 import com.zl.server.cache.EntityCache;
 import com.zl.server.cache.anno.Storage;
-import com.zl.server.commons.Command;
-import com.zl.server.netty.anno.NetMessageInvoke;
-import com.zl.server.play.base.model.Account;
 import com.zl.server.play.quest.event.QuestEvent;
 import com.zl.server.play.quest.event.QuestEventType;
 import com.zl.server.play.quest.model.Quest;
 import com.zl.server.netty.connection.NetConnection;
 import com.zl.server.play.base.packet.MR_Response;
-import com.zl.server.play.quest.packet.QuestBox;
-import com.zl.server.play.quest.packet.QuestModel;
+import com.zl.server.play.quest.model.QuestBox;
+import com.zl.server.play.quest.model.QuestModel;
 import com.zl.server.resource.quest.QuestProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -49,8 +45,6 @@ public class QuestServiceImpl implements QuestService {
         return quest.getModel();
     }
 
-
-    @EventListener
     public void handleQuestEvent(QuestEvent questEvent) {
         Integer playerId = questEvent.getPlayerId();
         Quest quest = questEntityCache.loadOrCreate(playerId);
@@ -62,12 +56,12 @@ public class QuestServiceImpl implements QuestService {
                 continue;
             }
             for (QuestModel questModel : model.getQuestModels()) {
-                questProcessor.finish(playerId, questModel.getTaskId(), quest, questModel);
+                questProcessor.finish(playerId, questModel.getTaskId(), quest, questModel, null);
             }
         }
     }
 
-    public QuestProcessor getQuestProcessor(QuestEventType eventType) {
+    private QuestProcessor getQuestProcessor(QuestEventType eventType) {
         return questProcessorMap.get(eventType);
     }
 }
