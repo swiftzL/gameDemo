@@ -6,7 +6,7 @@ import com.zl.server.play.bag.model.BagModel;
 import com.zl.server.play.base.dao.AccountDao;
 import com.zl.server.play.quest.model.QuestBox;
 import com.zl.server.play.quest.model.QuestModel;
-import com.zl.server.resource.Item;
+import com.zl.server.play.bag.resource.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 

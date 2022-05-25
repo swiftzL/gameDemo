@@ -6,7 +6,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class MS_ConsumProps {
-    private int type;
+    private int modelId;
     private int[] idxs;
     private int num;
 }
