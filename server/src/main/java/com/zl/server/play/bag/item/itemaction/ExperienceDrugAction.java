@@ -5,6 +5,7 @@ import com.zl.server.cache.anno.Storage;
 import com.zl.server.play.bag.context.PropsContext;
 import com.zl.server.play.bag.item.ItemAction;
 import com.zl.server.play.bag.model.Props;
+import com.zl.server.play.bag.resource.ExperienceDrugParam;
 import com.zl.server.play.base.model.Account;
 import com.zl.server.play.player.PlayerContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,8 @@ public class ExperienceDrugAction implements ItemAction {
 
     @Override
     public void action(int modelId, Integer playerId, int num) {
-        Props<Integer> props = PropsContext.getProps(modelId);
-        handleExperience(playerId, num, props.getProperties());
+        ExperienceDrugParam param = PropsContext.getItemParam(modelId, ExperienceDrugParam.class);
+        handleExperience(playerId, num, param.getLeve());
     }
 
     private void handleExperience(Integer playerId, int num, int level) {
