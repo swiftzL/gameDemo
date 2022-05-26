@@ -8,6 +8,8 @@ import com.zl.server.play.bag.resource.ItemType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,14 +32,13 @@ public class PropsContext {
         return propsMap.get(id);
     }
 
-    public static Item getItem(int id, int count) throws InstantiationException, IllegalAccessException {
+    public static Item getItem(int id, int count) throws Exception {
         Class<? extends Item> aClass = itemMap.get(id);
         Item item = aClass.newInstance();
-        item.setCount(count);
         item.setModelId(id);
+        item.setCount(count);
         return item;
     }
-
     static {
         Props props = new Props();
         props.setCount(2);
@@ -50,7 +51,7 @@ public class PropsContext {
     }
 
     public void action(int modelId, int playerId, int num) {
-        this.itemActionMap.get(modelId).action(playerId, num);
+        this.itemActionMap.get(getProps(modelId).getType()).action(modelId, playerId, num);
     }
 
 

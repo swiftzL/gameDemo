@@ -26,7 +26,6 @@ public class CreateAccount extends Function{
         AccountDto accountDto = new AccountDto();
         accountDto.setUsername(split[0]);
         accountDto.setPassword(split[1]);
-        Request request = new Request();
         Future<Response> future = RequestUtil.requestFuture(channel,getCode(),JSON.toJSONString(accountDto).getBytes());
         System.out.println(new String(future.get().getContent()));
     }

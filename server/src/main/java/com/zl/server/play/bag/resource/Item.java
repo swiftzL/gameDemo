@@ -6,7 +6,6 @@ import lombok.Setter;
 
 @Setter
 @Getter
-@AllArgsConstructor
 public  abstract class Item {
     private int modelId;
     private int count;

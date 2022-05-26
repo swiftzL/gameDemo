@@ -7,6 +7,7 @@ import com.zl.server.play.bag.context.PropsContext;
 import com.zl.server.play.bag.model.Bag;
 import com.zl.server.play.bag.model.BagModel;
 import com.zl.server.play.bag.model.Props;
+import com.zl.server.play.bag.packet.MR_BagStatus;
 import com.zl.server.play.bag.packet.MS_ConsumProps;
 import com.zl.server.play.bag.packet.MS_Props;
 import com.zl.server.play.base.packet.MR_Response;
@@ -24,7 +25,7 @@ public class BagServiceImpl implements BagService {
     private PropsContext propsContext;
 
     @Override
-    public NetMessage putProps(int playerId, MS_Props ms_props) throws Exception {
+    public NetMessage putProps(Integer playerId, MS_Props ms_props) throws Exception {
         Props props = PropsContext.getProps(ms_props.getPropsId());
         Bag bag = bagEntityCache.loadOrCreate(playerId);
         BagModel model = bag.getModel();
@@ -43,18 +44,24 @@ public class BagServiceImpl implements BagService {
         return new MR_Response("添加成功");
     }
 
-    public NetMessage consumeProps(int playerId, MS_ConsumProps ms_consumProps) {
+    public NetMessage consumeProps(Integer playerId, MS_ConsumProps ms_consumProps) {
         int[] idxs = ms_consumProps.getIdxs();
         int num = ms_consumProps.getNum();
         Bag bag = bagEntityCache.loadOrCreate(playerId);
         int bagCap = bag.getModel().getBagCap();
         Item[] items = bag.getModel().getItems();
         for (int idx : idxs) {
+            if (items[idx] == null) {
+                continue;
+            }
             if (items[idx].getModelId() != ms_consumProps.getModelId()) {
                 return new MR_Response("道具类型不一致");
             }
         }
         for (int idx : idxs) {
+            if (items[idx] == null) {
+                continue;
+            }
             int count = items[idx].getCount();
             if (count <= num) {
                 items[idx] = null;
@@ -69,6 +76,15 @@ public class BagServiceImpl implements BagService {
         bagEntityCache.writeBack(bag);
         propsContext.action(ms_consumProps.getModelId(), playerId, ms_consumProps.getNum());
         return new MR_Response("使用道具成功");
+    }
+
+    public MR_BagStatus showBag(Integer playerId) {
+        Bag bag = bagEntityCache.loadOrCreate(playerId);
+        BagModel model = bag.getModel();
+        MR_BagStatus mr_bagStatus = new MR_BagStatus();
+        mr_bagStatus.setBagCap(model.getBagCap());
+        mr_bagStatus.setItems(model.getItems());
+        return mr_bagStatus;
     }
 
 }

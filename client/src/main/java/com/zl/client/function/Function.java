@@ -8,10 +8,10 @@ import java.util.concurrent.ExecutionException;
 
 public abstract class Function {
     @Autowired
-    Scanner scanner;
+    protected Scanner scanner;
 
     @Autowired
-    Channel channel;
+    protected Channel channel;
 
 
     public abstract int getCode();

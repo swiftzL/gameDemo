@@ -6,10 +6,7 @@ import com.zl.server.play.base.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-public class ExperienceDrug extends Item {
 
-    public ExperienceDrug(int modelId, int count) {
-        super(modelId, count);
-    }
+public class ExperienceDrug extends Item {
 
 }
