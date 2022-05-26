@@ -1,4 +1,4 @@
-package com.zl.server.play.bag.resource;
+package com.zl.server.play.bag.item;
 
 public enum ItemType {
 

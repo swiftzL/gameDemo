@@ -1,7 +1,7 @@
 package com.zl.server.play.bag.packet;
 
 import com.zl.common.message.NetMessage;
-import com.zl.server.play.bag.resource.Item;
+import com.zl.server.play.bag.item.Item;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -11,7 +11,7 @@ import com.zl.server.play.bag.packet.MR_BagStatus;
 import com.zl.server.play.bag.packet.MS_ConsumProps;
 import com.zl.server.play.bag.packet.MS_Props;
 import com.zl.server.play.base.packet.MR_Response;
-import com.zl.server.play.bag.resource.Item;
+import com.zl.server.play.bag.item.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
