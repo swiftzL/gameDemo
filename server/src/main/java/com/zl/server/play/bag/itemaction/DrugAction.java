@@ -4,12 +4,17 @@ import com.zl.server.cache.EntityCache;
 import com.zl.server.cache.anno.Storage;
 import com.zl.server.play.bag.resource.ItemAction;
 import com.zl.server.play.base.model.Account;
+import com.zl.server.play.player.PlayerContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DrugAction implements ItemAction {
     @Storage
     private EntityCache<Integer, Account> entityCache;
+
+    @Autowired
+    private PlayerContext playerContext;
 
     @Override
     public void action(int modelId, Integer playerId, int num) {
@@ -18,15 +23,10 @@ public class DrugAction implements ItemAction {
                 handleExperience(playerId, num);
                 break;
         }
-
     }
-
     private void handleExperience(Integer playerId, int num) {
-        Account account = this.entityCache.load(playerId);
-        account.setLevel(account.getLevel() + 1);
-        this.entityCache.writeBack(account);
+        playerContext.addLevel(playerId, num);
     }
-
 
     @Override
     public int getId() {

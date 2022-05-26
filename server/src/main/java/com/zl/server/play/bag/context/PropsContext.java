@@ -5,11 +5,10 @@ import com.zl.server.play.bag.resource.ExperienceDrug;
 import com.zl.server.play.bag.resource.Item;
 import com.zl.server.play.bag.resource.ItemAction;
 import com.zl.server.play.bag.resource.ItemType;
+import com.zl.server.play.player.PlayerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +19,8 @@ public class PropsContext {
     private static Map<Integer, Class<? extends Item>> itemMap = new HashMap<>();
     private static Map<Integer, Props> propsMap = new HashMap<>();
     private Map<Integer, ItemAction> itemActionMap = new HashMap<>();
+
+
 
     @Autowired
     public PropsContext(List<ItemAction> itemActionList) {
