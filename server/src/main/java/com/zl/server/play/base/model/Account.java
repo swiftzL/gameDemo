@@ -1,5 +1,6 @@
 package com.zl.server.play.base.model;
 
+import com.zl.server.commons.AbstractBlobModelEntity;
 import lombok.Data;
 
 import javax.persistence.Entity;
@@ -13,11 +14,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Data
 @Entity
 @Table(name = "accounts")
-public class Account {
-
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Integer id;
+public class Account extends AbstractBlobModelEntity<AccountModel> {
 
     private String username;
 

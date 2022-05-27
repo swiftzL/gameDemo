@@ -56,7 +56,7 @@ public class QuestServiceImpl implements QuestService {
                 continue;
             }
             for (QuestModel questModel : model.getQuestModels()) {
-                questProcessor.finish(playerId, questModel.getTaskId(), quest, questModel, null);
+                questProcessor.finish(playerId, questModel.getTaskId(), quest, questModel, questEvent.getParams());
             }
         }
     }
