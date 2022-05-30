@@ -29,7 +29,7 @@ public class AttackEquipmentAction implements ItemAction {
     public void action(int modelId, Integer playerId, int num, Item item) {
         AttackParam itemParam = PropsContext.getItemParam(modelId, AttackParam.class);
         int attack = itemParam.getAttack() * num;
-        playerContext.addAttack(playerId, itemParam.getAttack());
+        playerContext.addAttack(playerId, attack);
         MR_Attack mr_attack = new MR_Attack();
         mr_attack.setAttack(attack);
         Account account = entityCache.load(playerId);
