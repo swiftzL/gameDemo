@@ -1,4 +1,4 @@
-package com.zl.server.play.quest.resource;
+package com.zl.server.play.quest.condition;
 
 import com.zl.server.cache.EntityCache;
 import com.zl.server.cache.anno.Storage;

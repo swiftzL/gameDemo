@@ -1,21 +1,22 @@
 package com.zl.server.play.base.service;
 
+import com.zl.common.message.NetMessage;
 import com.zl.server.cache.anno.Storage;
 import com.zl.server.netty.anno.NetMessageInvoke;
 import com.zl.server.cache.EntityCache;
 import com.zl.server.commons.Command;
+import com.zl.server.netty.utils.NetMessageUtil;
 import com.zl.server.play.base.dao.AccountDao;
 
 
 import com.zl.server.netty.connection.NetConnection;
 import com.zl.server.play.base.model.Account;
+import com.zl.server.play.base.packet.MR_AccountInfo;
 import com.zl.server.play.base.packet.MR_Response;
 import com.zl.server.play.base.packet.MS_Account;
 import com.zl.server.play.quest.event.QuestEvent;
-import com.zl.server.play.quest.event.QuestEventType;
 import io.netty.util.AttributeKey;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
@@ -36,18 +37,23 @@ public class AccountServiceImpl implements AccountService {
             return new MR_Response("登录失败");
         }
         netConnection.setAttr("id", account.getId());
+        NetMessageUtil.addConnection(account.getId(), netConnection);
         return new MR_Response("登录成功");
     }
 
     @NetMessageInvoke(Command.AccountInfo)
-    public MR_Response info(NetConnection netConnection) {
+    public NetMessage info(NetConnection netConnection) {
         AttributeKey<Integer> attributeInfo = AttributeKey.valueOf("id");
         Integer id = netConnection.getAttr("id", Integer.class);
         if (id == null) {
             return new MR_Response("当前用户未登录");
         }
         Account account = entityCache.loadOrCreate(id);
-        return new MR_Response("用户名:" + account.getUsername() + "-" + "等级:" + account.getLevel());
+        MR_AccountInfo mr_accountInfo = new MR_AccountInfo();
+        mr_accountInfo.setUsername(account.getUsername());
+        mr_accountInfo.setLevel(account.getLevel());
+        mr_accountInfo.setAccountModel(account.getModel());
+        return mr_accountInfo;
     }
 
     @NetMessageInvoke(Command.CreateAccount)

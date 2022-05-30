@@ -9,7 +9,9 @@ public enum Command {
     Upgrade(5, "升级"),
     PutProps(6, "添加道具"),
     ConsumeProps(7, "使用道具"),
-    ShowBag(8,"查看背包状态");
+    ShowBag(8,"查看背包状态"),
+    UseEquipment(9,"使用装备"),
+    RemoveEquipment(10,"移除装备");
     private int code;
     private String desc;
 

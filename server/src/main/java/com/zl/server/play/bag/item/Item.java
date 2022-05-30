@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public  abstract class Item {
+public  class Item {
     private int modelId;
     private int count;
 }

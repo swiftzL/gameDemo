@@ -1,4 +1,4 @@
-package com.zl.server.play.quest.resource;
+package com.zl.server.play.quest.action;
 
 import com.zl.server.play.quest.model.QuestModel;
 import com.zl.server.resource.quest.QuestAction;

@@ -34,4 +34,8 @@ public abstract class AbstractBlobModelEntity<M> {
     public String getData() {
         return data;
     }
+
+    public Integer getId() {
+        return id;
+    }
 }

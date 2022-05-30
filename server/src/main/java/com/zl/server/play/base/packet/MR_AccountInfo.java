@@ -2,13 +2,13 @@ package com.zl.server.play.base.packet;
 
 import com.zl.common.message.NetMessage;
 import com.zl.server.play.base.model.AccountModel;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
-public class MS_Account implements NetMessage {
+public class MR_AccountInfo implements NetMessage {
     private String username;
-    private String password;
+    private Integer level;
+    private AccountModel accountModel;
 }

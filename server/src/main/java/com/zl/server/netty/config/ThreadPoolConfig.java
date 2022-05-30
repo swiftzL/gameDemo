@@ -1,4 +1,4 @@
-package com.zl.server.config;
+package com.zl.server.netty.config;
 
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -12,11 +12,6 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class ThreadPoolConfig {
-
-    @Bean
-    public ThreadPoolExecutor asyncPoolExecutor(){
-        return new ThreadPoolExecutor(4,4,100, TimeUnit.SECONDS,new ArrayBlockingQueue<>(1000));
-    }
 
     @Bean
     @Qualifier("bossEventLoopGroup")

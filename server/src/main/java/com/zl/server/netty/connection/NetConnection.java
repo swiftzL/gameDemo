@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class NetConnection {
     private volatile Channel channel;
     private Map<String, Object> attrs = new ConcurrentHashMap<>();
+    private static Integer notificationId = -1;
     public static AttributeKey<NetConnection> netConnection = AttributeKey.valueOf("net_connection");
 
     public NetConnection(Channel channel) {
@@ -20,7 +21,7 @@ public class NetConnection {
     public void sendMessage(NetMessage message) {
         Response response = new Response();
         response.setContent(message);
-        response.setRequestId(getAttr("requestId", Integer.class));
+        response.setRequestId(notificationId);
         this.channel.writeAndFlush(response);
     }
 

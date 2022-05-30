@@ -1,12 +1,14 @@
-package com.zl.server.play.bag.item.itemaction;
+package com.zl.server.play.bag.item.action;
 
 import com.zl.server.cache.EntityCache;
 import com.zl.server.cache.anno.Storage;
+import com.zl.server.netty.utils.NetMessageUtil;
 import com.zl.server.play.bag.context.PropsContext;
-import com.zl.server.play.bag.item.ItemAction;
-import com.zl.server.play.bag.model.Props;
-import com.zl.server.play.bag.resource.ExperienceDrugParam;
+import com.zl.server.play.bag.item.Item;
+import com.zl.server.play.bag.item.ItemType;
+import com.zl.server.play.bag.item.param.ExperienceDrugParam;
 import com.zl.server.play.base.model.Account;
+import com.zl.server.play.base.packet.MR_AccountInfo;
 import com.zl.server.play.player.PlayerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,17 +22,21 @@ public class ExperienceDrugAction implements ItemAction {
     private PlayerContext playerContext;
 
     @Override
-    public void action(int modelId, Integer playerId, int num) {
+    public void action(int modelId, Integer playerId, int num, Item item) {
         ExperienceDrugParam param = PropsContext.getItemParam(modelId, ExperienceDrugParam.class);
         handleExperience(playerId, num, param.getLeve());
     }
 
     private void handleExperience(Integer playerId, int num, int level) {
-        playerContext.addLevel(playerId, num * level);
+        int currentLevel = num * level;
+        playerContext.addLevel(playerId, currentLevel);
+        MR_AccountInfo mr_accountInfo = new MR_AccountInfo();
+        mr_accountInfo.setLevel(currentLevel);
+        NetMessageUtil.sendMessage(playerId, mr_accountInfo);
     }
 
     @Override
-    public int getId() {
-        return 1;
+    public int getType() {
+        return ItemType.Drug.getCode();
     }
 }

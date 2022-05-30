@@ -3,7 +3,8 @@ package com.zl.server.play.bag.item;
 public enum ItemType {
 
 
-    Drug(1);
+    Drug(1),
+    Equipment_ATTACK(2);
 
     private int code;
 

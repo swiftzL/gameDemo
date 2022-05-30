@@ -1,5 +1,6 @@
 package com.zl.server.play.base.facade;
 
+import com.zl.common.message.NetMessage;
 import com.zl.server.netty.anno.NetMessageHandler;
 import com.zl.server.netty.anno.NetMessageInvoke;
 import com.zl.server.commons.Command;
@@ -21,7 +22,7 @@ public class AccountFacade {
     }
 
     @NetMessageInvoke(Command.AccountInfo)
-    public MR_Response info(NetConnection netConnection) {
+    public NetMessage info(NetConnection netConnection) {
         return accountService.info(netConnection);
     }
 

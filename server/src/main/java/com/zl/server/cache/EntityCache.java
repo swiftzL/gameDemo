@@ -2,19 +2,22 @@ package com.zl.server.cache;
 
 import com.alibaba.fastjson.JSON;
 import com.github.benmanes.caffeine.cache.*;
+import com.zl.server.cache.context.EntityManagerContext;
+import com.zl.server.cache.persist.Persist;
 import com.zl.server.commons.AbstractBlobModelEntity;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.EntityManager;
-
-@Data
+@Getter
+@Setter
 public class EntityCache<PK, T> implements Cache<PK, T> {
 
     private Class<?> entityClass;
     private EntityManagerContext entityManagerContext;
     private LoadingCache<PK, T> cache;
     private Persist persist;
-    private Class<?> cacheClass;
+    private Class<?> cacheClass; //缓存model class
 
     //持久层
     public EntityCache(Class<?> entityClass, EntityManagerContext context, Persist persist, Class<?> cacheClass) {

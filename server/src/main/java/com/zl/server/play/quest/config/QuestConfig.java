@@ -1,4 +1,4 @@
-package com.zl.server.play.quest.resource;
+package com.zl.server.play.quest.config;
 
 import com.zl.server.cache.EntityCache;
 import com.zl.server.cache.anno.Storage;
@@ -12,6 +12,9 @@ import org.springframework.context.annotation.Configuration;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 任务配置表
+ */
 @Configuration
 public class QuestConfig {
     @Bean

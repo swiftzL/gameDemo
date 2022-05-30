@@ -6,8 +6,6 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class MS_ConsumProps implements NetMessage {
+public class MR_UseEquipment implements NetMessage {
     private int modelId;
-    private int[] idxs;
-    private int num;
 }

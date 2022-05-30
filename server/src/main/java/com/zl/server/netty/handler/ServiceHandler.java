@@ -65,14 +65,19 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
                 args[i] = request;
             } else if (NetMessage.class.isAssignableFrom(clazz)) {
                 args[i] = request.getContent();
-            } else if (parameter.getAnnotation(Param.class)!=null) {
-               Param param = parameter.getAnnotation(Param.class);
-                args[i]=netConnection.getAttr(param.value());
+            } else if (parameter.getAnnotation(Param.class) != null) {
+                Param param = parameter.getAnnotation(Param.class);
+                args[i] = netConnection.getAttr(param.value());
             } else {
                 args[i] = null;
             }
         }
-        Object obj = invoke.invoke(args);
+        Object obj = null;
+        try {
+            obj = invoke.invoke(args);
+        } catch (Exception e) {
+            netConnection.sendMessage(new MR_Response(e.toString()));
+        }
         if (invoke.isVoid()) {
             return;
         }

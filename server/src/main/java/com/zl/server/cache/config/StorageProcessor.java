@@ -3,24 +3,20 @@ package com.zl.server.cache.config;
 
 import com.zl.server.cache.Cache;
 import com.zl.server.cache.EntityCache;
-import com.zl.server.cache.EntityManagerContext;
-import com.zl.server.cache.Persist;
+import com.zl.server.cache.context.EntityManagerContext;
+import com.zl.server.cache.persist.Persist;
 import com.zl.server.cache.anno.Storage;
 import com.zl.server.commons.AbstractBlobModelEntity;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
-import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessorAdapter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.util.ReflectionUtils;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -56,6 +52,11 @@ public class StorageProcessor implements BeanPostProcessor, ApplicationContextAw
         return bean;
     }
 
+    /**
+     * 注入缓存字段
+     * @param bean
+     * @param field
+     */
     public void inject(Object bean, Field field) {
         Class<?> entityClass = getEntityType(field);
         Cache cache = getOrCreate(entityClass);

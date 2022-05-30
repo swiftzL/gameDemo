@@ -1,10 +1,11 @@
-package com.zl.server.play.quest.resource;
+package com.zl.server.play.quest.config;
 
 import com.zl.server.cache.EntityCache;
 import com.zl.server.cache.anno.Storage;
 import com.zl.server.play.quest.event.QuestEventType;
 import com.zl.server.play.quest.model.Quest;
 import com.zl.server.play.quest.model.QuestModel;
+import com.zl.server.play.quest.resource.QuestConfigManager;
 import com.zl.server.resource.quest.QuestCondition;
 import com.zl.server.resource.quest.QuestConfig;
 import com.zl.server.resource.quest.QuestProcessor;

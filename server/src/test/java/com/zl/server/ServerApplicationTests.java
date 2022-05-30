@@ -1,9 +1,13 @@
 package com.zl.server;
 
 import com.alibaba.fastjson.JSON;
-import com.zl.server.cache.Persist;
+import com.zl.server.cache.persist.Persist;
 import com.zl.server.play.bag.model.BagModel;
+import com.zl.server.play.bag.resource.Attack;
 import com.zl.server.play.base.dao.AccountDao;
+import com.zl.server.play.base.model.AccountModel;
+import com.zl.server.play.base.model.AttrModel;
+import com.zl.server.play.base.model.EquipmentModel;
 import com.zl.server.play.quest.model.QuestBox;
 import com.zl.server.play.quest.model.QuestModel;
 import com.zl.server.play.bag.item.Item;
@@ -31,7 +35,15 @@ class ServerApplicationTests {
         BagModel bagModel = new BagModel();
         bagModel.setBagCap(100);
         bagModel.setItems(new Item[100]);
+        Attack attack = new Attack();
+        attack.setCount(1);
+        attack.setModelId(1);
+        bagModel.getItems()[0]=attack;
         System.out.println(JSON.toJSONString(bagModel));
+        String s = JSON.toJSONString(bagModel);
+        BagModel bagModel1 = JSON.parseObject(s, BagModel.class);
+        System.out.println(bagModel1.getItems());
+
     }
 
     public static void main2(String[] args) {
@@ -49,6 +61,13 @@ class ServerApplicationTests {
         questBox.setQuestModels(list);
         System.out.println(JSON.toJSONString(questBox));
 
+    }
+
+    public static void main21(String[] args) {
+        AccountModel accountModel = new AccountModel();
+        accountModel.setAttrModel(new AttrModel());
+        accountModel.setEquipmentModel(new EquipmentModel());
+        System.out.println(JSON.toJSONString(accountModel));
     }
 
 

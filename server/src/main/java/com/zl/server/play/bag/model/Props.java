@@ -1,6 +1,6 @@
 package com.zl.server.play.bag.model;
 
-import com.zl.server.play.bag.resource.ItemParam;
+import com.zl.server.play.bag.item.param.ItemParam;
 import lombok.Getter;
 import lombok.Setter;
 

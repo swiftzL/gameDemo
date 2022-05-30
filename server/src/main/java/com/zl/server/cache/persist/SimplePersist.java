@@ -1,20 +1,14 @@
-package com.zl.server.cache;
+package com.zl.server.cache.persist;
 
 import com.alibaba.fastjson.JSON;
+import com.zl.server.cache.context.EntityManagerContext;
 import com.zl.server.commons.AbstractBlobModelEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 import java.util.Deque;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -54,7 +48,6 @@ public class SimplePersist implements Persist {
         this.entityManagerContext.persist(obj);
         log.info("persisted");
     }
-
     @Override
     public void run() {
         if (running && !elements.isEmpty()) {

@@ -1,4 +1,4 @@
-package com.zl.server.cache;
+package com.zl.server.cache.persist;
 
 public interface Persist extends Runnable {
 
