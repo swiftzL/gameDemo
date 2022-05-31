@@ -47,6 +47,22 @@ public class PlayerContext {
         return account.getLevel();
     }
 
+    public boolean bagIsFull(Integer playerId) {
+        Bag bag = bagEntityCache.loadOrCreate(playerId);
+        return bag.getModel().getBagCap() == 0;
+    }
+
+    public boolean verifyBag(Integer playerId, int propsId, int propsNum) {
+        Props props = PropsContext.getProps(propsId);
+        Bag bag = bagEntityCache.loadOrCreate(playerId);
+        BagBox model = bag.getModel();
+        int num = propsNum;
+        if (model.getBagCap() < (num / props.getCount()) + (num % props.getCount() == 0 ? 0 : 1)) {
+            return false;
+        }
+        return true;
+    }
+
     public boolean addProps(Integer playerId, int propsId, int propsNum) throws Exception {
         Props props = PropsContext.getProps(propsId);
         Bag bag = bagEntityCache.loadOrCreate(playerId);
@@ -55,6 +71,7 @@ public class PlayerContext {
         if (model.getBagCap() < (num / props.getCount()) + (num % props.getCount() == 0 ? 0 : 1)) {
             return false;
         }
+
         Item[] items = model.getItems();
         for (int i = 0; i < items.length && num != 0; i++) {
             if (items[i] == null) {

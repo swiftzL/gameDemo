@@ -2,7 +2,7 @@ package com.zl.server.play.base.packet;
 
 import com.zl.common.message.NetMessage;
 
-import com.zl.server.play.base.vo.AccountVo;
+import com.zl.server.play.base.packet.vo.AccountVo;
 import lombok.Getter;
 import lombok.Setter;
 

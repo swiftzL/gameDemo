@@ -6,7 +6,7 @@ import com.zl.server.netty.utils.NetMessageUtil;
 import com.zl.server.play.bag.context.PropsContext;
 import com.zl.server.play.bag.item.Item;
 import com.zl.server.play.bag.item.ItemType;
-import com.zl.server.play.bag.item.param.ExperienceDrugParam;
+import com.zl.server.play.bag.resource.param.ExperienceDrugParam;
 import com.zl.server.play.base.model.Account;
 import com.zl.server.play.base.packet.MR_AccountInfo;
 import com.zl.server.play.player.PlayerContext;

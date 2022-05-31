@@ -27,4 +27,14 @@ public class LevelUpQuestCondition implements QuestCondition {
     public int getOperationType() {
         return type;
     }
+
+    @Override
+    public int getCurrent(Integer playerId) {
+        return PlayerContext.INSTANCE.getLevel(playerId);
+    }
+
+    @Override
+    public int getMaxCount() {
+        return this.leve;
+    }
 }

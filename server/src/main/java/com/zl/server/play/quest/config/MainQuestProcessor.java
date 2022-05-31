@@ -3,15 +3,13 @@ package com.zl.server.play.quest.config;
 import com.zl.server.cache.EntityCache;
 import com.zl.server.cache.anno.Storage;
 import com.zl.server.play.quest.action.QuestAction;
-import com.zl.server.play.quest.event.QuestType;
+import com.zl.server.play.quest.commons.QuestType;
 import com.zl.server.play.quest.model.Quest;
 import com.zl.server.play.quest.condition.QuestCondition;
 import com.zl.server.play.quest.model.QuestStorage;
 import com.zl.server.play.quest.resource.QuestConfig;
 import com.zl.server.play.quest.resource.QuestProcessor;
-import com.zl.server.play.quest.resource.QuestResource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -30,7 +28,7 @@ public class MainQuestProcessor implements QuestProcessor {
         return QuestType.Main;
     }
 
-    public QuestConfig getQuestConfig(Integer id){
+    public QuestConfig getQuestConfig(Integer id) {
         return questResourceMap.get(id);
     }
 

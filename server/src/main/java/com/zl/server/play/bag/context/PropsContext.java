@@ -1,14 +1,14 @@
 package com.zl.server.play.bag.context;
 
-import com.zl.server.play.bag.item.param.AttackParam;
+import com.zl.server.play.bag.resource.param.AttackParam;
 import com.zl.server.play.bag.resource.Props;
 import com.zl.server.play.bag.resource.Attack;
 import com.zl.server.play.bag.resource.ExperienceDrug;
 import com.zl.server.play.bag.item.Item;
 import com.zl.server.play.bag.item.action.ItemAction;
 import com.zl.server.play.bag.item.ItemType;
-import com.zl.server.play.bag.item.param.ExperienceDrugParam;
-import com.zl.server.play.bag.item.param.ItemParam;
+import com.zl.server.play.bag.resource.param.ExperienceDrugParam;
+import com.zl.server.play.bag.resource.param.ItemParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package com.zl.server.play.quest.event;
+package com.zl.server.play.quest.commons;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,10 +22,4 @@ public enum QuestType {
     public int getCode() {
         return code;
     }
-
-    public static Set<QuestType> getQuestEventTypeSet() {
-        return questEventTypeSet;
-    }
-
-
 }

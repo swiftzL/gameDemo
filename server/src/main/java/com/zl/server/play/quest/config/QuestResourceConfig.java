@@ -7,12 +7,11 @@ import com.zl.server.play.quest.action.QuestAction;
 import com.zl.server.play.quest.condition.LevelUpQuestCondition;
 import com.zl.server.play.quest.condition.LoginQuestCondition;
 import com.zl.server.play.quest.condition.QuestCondition;
-import com.zl.server.play.quest.event.QuestType;
+import com.zl.server.play.quest.commons.QuestType;
 import com.zl.server.play.quest.resource.QuestConfig;
 import com.zl.server.play.quest.resource.QuestResource;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,6 +19,8 @@ import java.util.Map;
  */
 
 public class QuestResourceConfig {
+
+    public static Map<Integer, QuestResource> allQuestConfigMap = new HashMap<>();
 
     public static Map<Integer, QuestConfig> mainQuestResources() {
         Map<Integer, QuestConfig> questConfigMap = new HashMap<>();
@@ -31,18 +32,24 @@ public class QuestResourceConfig {
         QuestCondition questCondition1 = new LevelUpQuestCondition(OperationType.Upgrade.getCode(), 24);
         questResource1.setQuestCondition(questCondition1);
         questResource1.setId(1);
+        questResource1.setQuestName("提升等级到24级");
         questResource1.setType(QuestType.Main.getCode());
+
 
         //登录
         QuestResource questResource2 = new QuestResource();
         QuestAction loginQuestAction2 = new LoginQuestAction();
         questResource2.setQuestAction(loginQuestAction2);
-        QuestCondition loginQuestCondition = new LoginQuestCondition(OperationType.Login.getCode());
+        QuestCondition loginQuestCondition = new LoginQuestCondition(OperationType.Login.getCode(), 2);
         questResource2.setQuestCondition(loginQuestCondition);
         questResource2.setId(2);
         questResource2.setType(QuestType.Main.getCode());
+        questResource2.setQuestName("登录两次");
         questConfigMap.put(1, questResource1);
         questConfigMap.put(2, questResource2);
+
+        allQuestConfigMap.put(1, questResource1);
+        allQuestConfigMap.put(2, questResource2);
         return questConfigMap;
     }
 }

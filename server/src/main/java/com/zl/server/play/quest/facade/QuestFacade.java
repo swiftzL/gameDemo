@@ -6,6 +6,8 @@ import com.zl.server.netty.anno.NetMessageInvoke;
 import com.zl.server.commons.Command;
 import com.zl.server.netty.anno.Param;
 import com.zl.server.netty.connection.NetConnection;
+import com.zl.server.play.base.event.LoginEvent;
+import com.zl.server.play.base.event.UpgradeEvent;
 import com.zl.server.play.quest.event.QuestEvent;
 import com.zl.server.play.quest.packet.MS_Quest;
 import com.zl.server.play.quest.service.QuestService;
@@ -19,8 +21,8 @@ public class QuestFacade {
     private QuestService questService;
 
     @NetMessageInvoke(Command.ShowTask)
-    public void showTask(@Param("id")Integer playerId, NetConnection netConnection) {
-        questService.showTask(playerId,netConnection);
+    public void showTask(@Param("id") Integer playerId, NetConnection netConnection) {
+        questService.showTask(playerId, netConnection);
     }
 
 
@@ -36,8 +38,13 @@ public class QuestFacade {
 
 
     @EventListener
-    public void handleQuestEvent(QuestEvent questEvent) {
-        questService.handleQuestEvent(questEvent);
+    public void handleLoginEvent(LoginEvent loginEvent) {
+        questService.handleQuestEvent(QuestEvent.valueOf(loginEvent.getPlayerId(), loginEvent.getType(), loginEvent.getParam()));
+    }
+
+    @EventListener
+    public void handleUpgradeEvent(UpgradeEvent upgradeEvent) {
+        questService.handleQuestEvent(QuestEvent.valueOf(upgradeEvent.getPlayerId(), upgradeEvent.getType(), upgradeEvent.getParam()));
     }
 
 }

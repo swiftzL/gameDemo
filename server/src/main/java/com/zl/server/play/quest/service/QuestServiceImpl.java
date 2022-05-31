@@ -1,17 +1,15 @@
 package com.zl.server.play.quest.service;
 
-import com.zl.common.message.NetMessage;
 import com.zl.server.cache.EntityCache;
 import com.zl.server.cache.anno.Storage;
+import com.zl.server.commons.Constants;
 import com.zl.server.netty.utils.NetMessageUtil;
-import com.zl.server.play.bag.item.Item;
 import com.zl.server.play.bag.model.Bag;
-import com.zl.server.play.base.model.Account;
 import com.zl.server.play.player.PlayerContext;
 import com.zl.server.play.quest.config.AwardManager;
 import com.zl.server.play.quest.config.QuestManager;
+import com.zl.server.play.quest.config.QuestResourceConfig;
 import com.zl.server.play.quest.event.QuestEvent;
-import com.zl.server.play.quest.event.QuestType;
 import com.zl.server.play.quest.model.Quest;
 import com.zl.server.netty.connection.NetConnection;
 import com.zl.server.play.base.packet.MR_Response;
@@ -22,6 +20,7 @@ import com.zl.server.play.quest.packet.MS_Quest;
 import com.zl.server.play.quest.resource.Award;
 import com.zl.server.play.quest.resource.QuestConfig;
 import com.zl.server.play.quest.resource.QuestProcessor;
+import com.zl.server.play.quest.resource.QuestResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +38,7 @@ public class QuestServiceImpl implements QuestService {
     private EntityCache<Integer, Bag> bagEntityCache;
     private Map<Integer, QuestProcessor> questProcessorMap;
     private Map<Integer, List<QuestBox>> idToQuest = new HashMap<>();
+    private Map<Integer, QuestResource> questConfigMap = QuestResourceConfig.allQuestConfigMap;
 
     @Autowired
     public void setQuestProcessorMap(Set<QuestProcessor> questProcessors) {
@@ -72,28 +72,33 @@ public class QuestServiceImpl implements QuestService {
         }
     }
 
+    //校验背包
+
     //领取
     public void drawAward(Integer playerId, MS_Quest req) throws Exception {
         Quest quest = questEntityCache.loadOrCreate(playerId);
         QuestBox questBox = quest.getModel();
         List<QuestStorage> questStorages = questBox.getQuestStorages();
+        if (PlayerContext.INSTANCE.bagIsFull(playerId)) {
+            NetMessageUtil.sendMessage(playerId, new MR_Response("背包容量满了"));
+            return;
+        }
         for (QuestStorage questStorage : questStorages) {
             if (questStorage.getTaskId().equals(req.getQuestId())) {
-                if (questStorage.getIsReceive().equals(1)) {
+                if (questStorage.getIsReceive().equals(Constants.YES)) {
                     NetMessageUtil.sendMessage(playerId, new MR_Response("当前奖励已经领取"));
                     return;
                 }
-                questStorage.setIsReceive(1);
+                //修改状态
+                questStorage.setIsReceive(Constants.YES);
                 questEntityCache.writeBack(quest);
                 //添加背包
                 Award award = AwardManager.awardMap.get(req.getQuestId());
                 if (PlayerContext.INSTANCE.addProps(playerId, award.getModeId(), award.getNum())) {
-                    bagEntityCache.writeBack(bagEntityCache.loadOrCreate(playerId));
-                    questEntityCache.writeBack(quest);
                     NetMessageUtil.sendMessage(playerId, new MR_Response("领取奖励成功"));
-                    return;
+                } else {
+                    NetMessageUtil.sendMessage(playerId, new MR_Response("领取奖励失败-背包容量不够"));
                 }
-                NetMessageUtil.sendMessage(playerId, new MR_Response("领取奖励失败-背包容量不够"));
             }
         }
         NetMessageUtil.sendMessage(playerId, new MR_Response("当前任务不存在"));
@@ -107,7 +112,17 @@ public class QuestServiceImpl implements QuestService {
             NetMessageUtil.sendMessage(playerId, new MR_Response("当前任务已存在"));
             return;
         }
-        QuestStorage questStorage = QuestManager.getQuest(req.getQuestId());
+        QuestResource questResource = questConfigMap.get(req.getQuestId());
+
+        QuestStorage questStorage = new QuestStorage();
+        questStorage.setTaskName(questResource.getQuestName());
+        questStorage.setTaskStatus(Constants.NO);
+        questStorage.setTaskId(questResource.getId());
+        questStorage.setCurrent(questResource.getQuestCondition().getCurrent(playerId));
+        questStorage.setMaxCount(questResource.getQuestCondition().getMaxCount());
+        questStorage.setTaskType(questResource.getType());
+        questStorage.setIsReceive(Constants.NO);
+
         questStorages.add(questStorage);
         questEntityCache.writeBack(quest);
         NetMessageUtil.sendMessage(playerId, new MR_Response("领取任务成功"));

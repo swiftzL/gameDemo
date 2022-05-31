@@ -22,6 +22,11 @@ public class QuestResource implements QuestConfig {
      */
     private int type;
 
+    /**
+     * 任务名
+     */
+    private String questName;
+
     private QuestCondition questCondition;
     private QuestAction questAction;
 

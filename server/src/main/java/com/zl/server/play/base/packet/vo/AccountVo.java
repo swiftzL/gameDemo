@@ -1,4 +1,4 @@
-package com.zl.server.play.base.vo;
+package com.zl.server.play.base.packet.vo;
 
 import com.zl.server.play.bag.item.Item;
 import lombok.Getter;

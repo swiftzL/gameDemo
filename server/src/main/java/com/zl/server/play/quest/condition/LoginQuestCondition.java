@@ -9,6 +9,7 @@ import lombok.Getter;
 public class LoginQuestCondition implements QuestCondition {
 
     private int type;
+    private int count;
 
     @Override
     public boolean verify(Integer playerId, QuestStorage questStorage, Object resource) {
@@ -18,5 +19,15 @@ public class LoginQuestCondition implements QuestCondition {
     @Override
     public int getOperationType() {
         return type;
+    }
+
+    @Override
+    public int getCurrent(Integer playerId) {
+        return 0;
+    }
+
+    @Override
+    public int getMaxCount() {
+        return this.count;
     }
 }

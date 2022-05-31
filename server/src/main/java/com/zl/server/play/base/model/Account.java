@@ -20,6 +20,6 @@ public class Account extends AbstractBlobModelEntity<AccountBox> {
 
     private String password;
 
-    private Integer level;
+    private Integer level = 1;
 
 }

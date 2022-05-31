@@ -1,6 +1,6 @@
 package com.zl.server.play.quest.resource;
 
-import com.zl.server.play.quest.event.QuestType;
+import com.zl.server.play.quest.commons.QuestType;
 import com.zl.server.play.quest.model.Quest;
 import com.zl.server.play.quest.model.QuestStorage;
 
