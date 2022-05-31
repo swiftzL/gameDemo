@@ -2,14 +2,16 @@ package com.zl.server.netty.handler;
 
 import com.zl.common.message.NetMessage;
 import com.zl.server.netty.anno.Param;
+import com.zl.server.netty.intercept.Intercept;
+import com.zl.server.netty.intercept.LoginIntercept;
 import com.zl.server.netty.model.Request;
 import com.zl.server.netty.model.Response;
 import com.zl.server.netty.config.NetMessageProcessor;
-import com.zl.server.netty.dispatch.Invoke;
+import com.zl.server.netty.invoke.Invoke;
 import com.zl.server.netty.connection.NetConnection;
 import com.zl.server.netty.threadpool.DispatchExecutor;
-import com.zl.server.netty.threadpool.Executor;
 import com.zl.server.netty.threadpool.Task;
+import com.zl.server.netty.threadpool.TaskExecutor;
 import com.zl.server.play.base.packet.MR_Response;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -25,11 +27,11 @@ import java.util.Map;
 public class ServiceHandler extends ChannelInboundHandlerAdapter {
 
     private Map<Integer, Invoke> invokes = NetMessageProcessor.invokes;
-    private Executor executor = DispatchExecutor.ExecutorHolder.INSTANCE;
+    private TaskExecutor executor = DispatchExecutor.ExecutorHolder.INSTANCE;
+    private Intercept intercept = Intercept.loginIntercept;
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-
         NetConnection netConnection = getConnection(ctx.channel());
         Integer id = netConnection.getAttr("id", Integer.class);
         if (id == null) {
@@ -45,33 +47,19 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-    private void exec(NetConnection netConnection, Object msg) throws
-            InvocationTargetException, IllegalAccessException {
+
+    private void exec(NetConnection netConnection, Object msg) {
         Request request = (Request) msg;
         Invoke invoke = invokes.get(request.getCommand());
         if (invoke == null) {
             netConnection.sendMessage(new MR_Response("指令错误"));
             return;
         }
-        Class[] argsType = invoke.getArgsType();
-        Object[] args = new Object[argsType.length];
-        Parameter[] parameters = invoke.getParameters();
-        for (int i = 0; i < args.length; i++) {
-            Class clazz = argsType[i];
-            Parameter parameter = parameters[i];
-            if (NetConnection.class.equals(clazz)) {
-                args[i] = netConnection;
-            } else if (Request.class.equals(clazz)) {
-                args[i] = request;
-            } else if (NetMessage.class.isAssignableFrom(clazz)) {
-                args[i] = request.getContent();
-            } else if (parameter.getAnnotation(Param.class) != null) {
-                Param param = parameter.getAnnotation(Param.class);
-                args[i] = netConnection.getAttr(param.value());
-            } else {
-                args[i] = null;
-            }
+        //拦截
+        if (!intercept.preHandle(netConnection, request)) {
+            return;
         }
+        Object[] args = parseArgs(invoke, netConnection, request);
         Object obj = null;
         try {
             obj = invoke.invoke(args);
@@ -91,6 +79,29 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
         }
         response.setRequestId(request.getRequestId());
         netConnection.sendMessage(response);
+    }
+
+    private Object[] parseArgs(Invoke invoke, NetConnection netConnection, Request request) {
+        Class[] argsType = invoke.getArgsType();
+        Object[] args = new Object[argsType.length];
+        Parameter[] parameters = invoke.getParameters();
+        for (int i = 0; i < args.length; i++) {
+            Class clazz = argsType[i];
+            Parameter parameter = parameters[i];
+            if (NetConnection.class.equals(clazz)) {
+                args[i] = netConnection;
+            } else if (Request.class.equals(clazz)) {
+                args[i] = request;
+            } else if (NetMessage.class.isAssignableFrom(clazz)) {
+                args[i] = request.getContent();
+            } else if (parameter.getAnnotation(Param.class) != null) {
+                Param param = parameter.getAnnotation(Param.class);
+                args[i] = netConnection.getAttr(param.value());
+            } else {
+                args[i] = null;
+            }
+        }
+        return args;
     }
 
     @Override

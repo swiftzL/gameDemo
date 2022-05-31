@@ -1,5 +1,7 @@
-package com.zl.server.resource.quest;
+package com.zl.server.play.quest.resource;
 
+import com.zl.server.play.quest.action.QuestAction;
+import com.zl.server.play.quest.condition.QuestCondition;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +18,7 @@ public class QuestResource implements QuestConfig {
     private int id;
 
     /**
-     * 任务类型
+     * 任务类型 主线 支线
      */
     private int type;
 

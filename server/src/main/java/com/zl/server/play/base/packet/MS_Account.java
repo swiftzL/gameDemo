@@ -1,7 +1,6 @@
 package com.zl.server.play.base.packet;
 
 import com.zl.common.message.NetMessage;
-import com.zl.server.play.base.model.AccountModel;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;

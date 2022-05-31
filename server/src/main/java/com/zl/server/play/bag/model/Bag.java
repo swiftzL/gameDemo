@@ -7,6 +7,6 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "bags")
-public class Bag extends AbstractBlobModelEntity<BagModel> {
+public class Bag extends AbstractBlobModelEntity<BagBox> {
 
 }

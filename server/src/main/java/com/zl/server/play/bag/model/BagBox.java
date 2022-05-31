@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class BagModel {
+public class BagBox {
     private Item[] items;
     private int bagCap;   //背包容量
 

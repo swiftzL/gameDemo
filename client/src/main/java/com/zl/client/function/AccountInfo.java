@@ -20,8 +20,6 @@ public class AccountInfo extends Function {
     @Override
     public void run() throws ExecutionException, InterruptedException {
         System.out.println("查询中.....");
-        Future<Response> responseFuture = RequestUtil.requestFuture(channel, getCode(), null);
-        System.out.println(new String(responseFuture.get().getContent()));
-
+        RequestUtil.requestFuture(channel, getCode(), null);
     }
 }

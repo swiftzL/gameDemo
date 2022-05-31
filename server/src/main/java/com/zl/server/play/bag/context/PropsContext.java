@@ -1,7 +1,7 @@
 package com.zl.server.play.bag.context;
 
 import com.zl.server.play.bag.item.param.AttackParam;
-import com.zl.server.play.bag.model.Props;
+import com.zl.server.play.bag.resource.Props;
 import com.zl.server.play.bag.resource.Attack;
 import com.zl.server.play.bag.resource.ExperienceDrug;
 import com.zl.server.play.bag.item.Item;

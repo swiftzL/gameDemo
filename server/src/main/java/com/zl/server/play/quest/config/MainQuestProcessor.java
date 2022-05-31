@@ -2,48 +2,45 @@ package com.zl.server.play.quest.config;
 
 import com.zl.server.cache.EntityCache;
 import com.zl.server.cache.anno.Storage;
-import com.zl.server.play.quest.event.QuestEventType;
+import com.zl.server.play.quest.action.QuestAction;
+import com.zl.server.play.quest.event.QuestType;
 import com.zl.server.play.quest.model.Quest;
-import com.zl.server.play.quest.model.QuestModel;
-import com.zl.server.play.quest.resource.QuestConfigManager;
-import com.zl.server.resource.quest.QuestCondition;
-import com.zl.server.resource.quest.QuestConfig;
-import com.zl.server.resource.quest.QuestProcessor;
-import com.zl.server.resource.quest.QuestResource;
+import com.zl.server.play.quest.condition.QuestCondition;
+import com.zl.server.play.quest.model.QuestStorage;
+import com.zl.server.play.quest.resource.QuestConfig;
+import com.zl.server.play.quest.resource.QuestProcessor;
+import com.zl.server.play.quest.resource.QuestResource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
 @Slf4j
 public class MainQuestProcessor implements QuestProcessor {
 
-    @Autowired
-    private QuestConfigManager questConfigManager;
-
+    private Map<Integer, QuestConfig> questResourceMap = QuestResourceConfig.mainQuestResources();
     @Storage
     private EntityCache<Integer, Quest> entityCache;
 
 
     @Override
-    public QuestEventType getQuestType() {
-        return QuestEventType.Main;
+    public QuestType getQuestType() {
+        return QuestType.Main;
+    }
+
+    public QuestConfig getQuestConfig(Integer id){
+        return questResourceMap.get(id);
     }
 
     @Override
-    public void finish(Integer playerId, int questId, Quest quest, QuestModel questModel, Object resource) {
-        QuestConfig questConfig = questConfigManager.getconfig(questId);
-        if (questConfig == null) {
-            log.warn("questId" + questId + "is not found");
-        }
+    public void finish(Integer playerId, int questId, Quest quest, QuestStorage questStorage, Object resource) {
+        QuestConfig questConfig = questResourceMap.get(questId);
         QuestCondition finishCondition = questConfig.getFinishCondition();
-        if (finishCondition.verify(playerId, questModel, resource)) {
-            questModel.setTaskStatus(1);
-            questModel.setCurrent(questModel.getCurrent() + 1);
+        if (finishCondition.verify(playerId, questStorage, resource)) {
+            QuestAction questAction = questConfig.getQuestAction();
+            questAction.action(questStorage);
             entityCache.writeBack(quest);
         }
     }

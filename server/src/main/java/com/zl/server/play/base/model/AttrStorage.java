@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AttrModel {
+public class AttrStorage {
     private int attack;
     private int defense;
 }

@@ -14,7 +14,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Data
 @Entity
 @Table(name = "accounts")
-public class Account extends AbstractBlobModelEntity<AccountModel> {
+public class Account extends AbstractBlobModelEntity<AccountBox> {
 
     private String username;
 

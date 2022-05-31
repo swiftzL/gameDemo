@@ -23,7 +23,6 @@ public class UseEquipment extends Function {
         MS_Equipment ms_equipment = new MS_Equipment();
         System.out.println("输入装备id");
         ms_equipment.setModelId(scanner.nextInt());
-        Future<Response> responseFuture = RequestUtil.requestFuture(this.channel, getCode(), JSON.toJSONString(ms_equipment).getBytes());
-        System.out.println(new String(responseFuture.get().getContent()));
+        RequestUtil.requestFuture(this.channel, getCode(), JSON.toJSONString(ms_equipment).getBytes());
     }
 }

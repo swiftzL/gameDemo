@@ -17,11 +17,8 @@ public class RequestUtil {
         return request;
     }
 
-    public static Future<Response> requestFuture(Channel channel, int code, byte[] content){
+    public static void requestFuture(Channel channel, int code, byte[] content){
         Request request = request(code,content);
-        CompletableFuture<Response> future = new CompletableFuture();
-        ChannelHolder.put(request.getRequestId(), future);
         channel.writeAndFlush(request);
-        return future;
     }
 }

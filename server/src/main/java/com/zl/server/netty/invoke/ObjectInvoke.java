@@ -1,7 +1,6 @@
-package com.zl.server.netty.dispatch;
+package com.zl.server.netty.invoke;
 
 
-import com.zl.server.netty.dispatch.Invoke;
 import com.zl.server.netty.model.Response;
 
 import java.lang.reflect.InvocationTargetException;
@@ -9,7 +8,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
 public class ObjectInvoke implements Invoke {
-
     private boolean isVoid;
     private Object object;
     private Method method;

@@ -33,6 +33,10 @@ public class NetConnection {
         return (T) attrs.get(key);
     }
 
+    public boolean hashAttr(String key){
+        return attrs.containsKey(key);
+    }
+
     public Object getAttr(String key) {
         return attrs.get(key);
     }

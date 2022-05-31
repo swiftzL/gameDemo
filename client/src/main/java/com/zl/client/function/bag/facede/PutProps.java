@@ -26,8 +26,6 @@ public class PutProps extends Function {
         String[] split = s.split("-");
         ms_props.setPropsId(Integer.valueOf(split[0]));
         ms_props.setNum(Integer.valueOf(split[1]));
-        Future<Response> responseFuture = RequestUtil.requestFuture(this.channel, getCode(), JSON.toJSONString(ms_props).getBytes());
-        System.out.println(new String(responseFuture.get().getContent()));
-
+        RequestUtil.requestFuture(this.channel, getCode(), JSON.toJSONString(ms_props).getBytes());
     }
 }

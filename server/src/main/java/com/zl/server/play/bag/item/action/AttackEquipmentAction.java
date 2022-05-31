@@ -11,7 +11,7 @@ import com.zl.server.play.bag.item.param.ExperienceDrugParam;
 import com.zl.server.play.bag.packet.MR_Attack;
 import com.zl.server.play.bag.resource.Attack;
 import com.zl.server.play.base.model.Account;
-import com.zl.server.play.base.model.EquipmentModel;
+import com.zl.server.play.base.model.EquipmentStorage;
 import com.zl.server.play.player.PlayerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,11 +33,10 @@ public class AttackEquipmentAction implements ItemAction {
         MR_Attack mr_attack = new MR_Attack();
         mr_attack.setAttack(attack);
         Account account = entityCache.load(playerId);
-        EquipmentModel equipmentModel = account.getModel().getEquipmentModel();
-        equipmentModel.setAttack(item);
+        EquipmentStorage equipmentStorage = account.getModel().getEquipmentStorage();
+        equipmentStorage.setWeapon(item);
         entityCache.writeBack(account);
         NetMessageUtil.sendMessage(playerId, mr_attack);
-
     }
 
     @Override

@@ -1,5 +1,5 @@
 package com.zl.server.netty.threadpool;
 
-public interface Executor {
+public interface TaskExecutor {
     void execute(Task task);
 }

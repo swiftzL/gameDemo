@@ -5,6 +5,7 @@ import com.zl.server.cache.context.EntityManagerContext;
 import com.zl.server.commons.AbstractBlobModelEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -23,6 +24,8 @@ public class SimplePersist implements Persist {
     private Deque<Object> elements = new ConcurrentLinkedDeque<>();
     private Lock lock = new ReentrantLock();
     private volatile boolean running = true;
+    @Value("${gamedemo.persist.num}")
+    private int persistNum;
 
 
     @Override
@@ -48,17 +51,18 @@ public class SimplePersist implements Persist {
         this.entityManagerContext.persist(obj);
         log.info("persisted");
     }
+
     @Override
     public void run() {
         if (running && !elements.isEmpty()) {
-            lock.lock();
-            Object obj = elements.removeFirst();
-            log.info("persist {}", obj);
-            lock.unlock();
-            try {
-                persist(obj);
-            } catch (Exception e) {
-                System.out.println(e);
+            for (int i = 0; i < this.persistNum; i++) {
+                Object obj = elements.removeFirst();
+                log.info("persist {}", obj);
+                try {
+                    persist(obj);
+                } catch (Exception e) {
+                    log.error("exception is {}", e);
+                }
             }
         }
     }

@@ -3,16 +3,26 @@ package com.zl.server.play.quest.service;
 import com.zl.common.message.NetMessage;
 import com.zl.server.cache.EntityCache;
 import com.zl.server.cache.anno.Storage;
+import com.zl.server.netty.utils.NetMessageUtil;
+import com.zl.server.play.bag.item.Item;
+import com.zl.server.play.bag.model.Bag;
+import com.zl.server.play.base.model.Account;
+import com.zl.server.play.player.PlayerContext;
+import com.zl.server.play.quest.config.AwardManager;
+import com.zl.server.play.quest.config.QuestManager;
 import com.zl.server.play.quest.event.QuestEvent;
-import com.zl.server.play.quest.event.QuestEventType;
+import com.zl.server.play.quest.event.QuestType;
 import com.zl.server.play.quest.model.Quest;
 import com.zl.server.netty.connection.NetConnection;
 import com.zl.server.play.base.packet.MR_Response;
 import com.zl.server.play.quest.model.QuestBox;
-import com.zl.server.play.quest.model.QuestModel;
-import com.zl.server.resource.quest.QuestProcessor;
+import com.zl.server.play.quest.model.QuestStorage;
+import com.zl.server.play.quest.packet.MR_Quests;
+import com.zl.server.play.quest.packet.MS_Quest;
+import com.zl.server.play.quest.resource.Award;
+import com.zl.server.play.quest.resource.QuestConfig;
+import com.zl.server.play.quest.resource.QuestProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -25,43 +35,97 @@ public class QuestServiceImpl implements QuestService {
 
     @Storage
     private EntityCache<Integer, Quest> questEntityCache;
-    private Map<QuestEventType, QuestProcessor> questProcessorMap;
+    @Storage
+    private EntityCache<Integer, Bag> bagEntityCache;
+    private Map<Integer, QuestProcessor> questProcessorMap;
     private Map<Integer, List<QuestBox>> idToQuest = new HashMap<>();
 
     @Autowired
     public void setQuestProcessorMap(Set<QuestProcessor> questProcessors) {
         this.questProcessorMap = new HashMap<>();
         for (QuestProcessor questProcessor : questProcessors) {
-            this.questProcessorMap.put(questProcessor.getQuestType(), questProcessor);
+            this.questProcessorMap.put(questProcessor.getQuestType().getCode(), questProcessor);
         }
     }
 
-    public NetMessage showTask(NetConnection netConnection) {
-        Integer id = netConnection.getAttr("id", Integer.class);
-        if (id == null) {
-            return new MR_Response("当前用户未登录");
-        }
-        Quest quest = questEntityCache.loadOrCreate(id);
-        return quest.getModel();
+    public void showTask(Integer playerId, NetConnection netConnection) {
+        Quest quest = questEntityCache.loadOrCreate(playerId);
+        List<QuestStorage> questStorages = quest.getModel().getQuestStorages();
+        MR_Quests packet = new MR_Quests();
+        packet.setQuestStorages(questStorages);
+        netConnection.sendMessage(packet);
+
     }
 
     public void handleQuestEvent(QuestEvent questEvent) {
         Integer playerId = questEvent.getPlayerId();
         Quest quest = questEntityCache.loadOrCreate(playerId);
-        QuestBox model = quest.getModel();
-        Set<QuestEventType> questEventTypeSet = QuestEventType.getQuestEventTypeSet();
-        for (QuestEventType questEventType : questEventTypeSet) {
-            QuestProcessor questProcessor = getQuestProcessor(questEventType);
-            if (questProcessor == null) {
+        for (QuestStorage questStorage : quest.getModel().getQuestStorages()) {
+            if (questStorage.getTaskStatus().equals(1)) {//跳过完成的任务
                 continue;
             }
-            for (QuestModel questModel : model.getQuestModels()) {
-                questProcessor.finish(playerId, questModel.getTaskId(), quest, questModel, questEvent.getParams());
+            QuestProcessor questProcessor = getQuestProcessor(questStorage.getTaskType());
+            QuestConfig questConfig = questProcessor.getQuestConfig(questStorage.getTaskId());
+            if (questConfig != null && questConfig.getFinishCondition().getOperationType() == questEvent.getType()) {
+                questProcessor.finish(playerId, questStorage.getTaskId(), quest, questStorage, questEvent.getParams());
             }
         }
     }
 
-    private QuestProcessor getQuestProcessor(QuestEventType eventType) {
-        return questProcessorMap.get(eventType);
+    //领取
+    public void drawAward(Integer playerId, MS_Quest req) throws Exception {
+        Quest quest = questEntityCache.loadOrCreate(playerId);
+        QuestBox questBox = quest.getModel();
+        List<QuestStorage> questStorages = questBox.getQuestStorages();
+        for (QuestStorage questStorage : questStorages) {
+            if (questStorage.getTaskId().equals(req.getQuestId())) {
+                if (questStorage.getIsReceive().equals(1)) {
+                    NetMessageUtil.sendMessage(playerId, new MR_Response("当前奖励已经领取"));
+                    return;
+                }
+                questStorage.setIsReceive(1);
+                questEntityCache.writeBack(quest);
+                //添加背包
+                Award award = AwardManager.awardMap.get(req.getQuestId());
+                if (PlayerContext.INSTANCE.addProps(playerId, award.getModeId(), award.getNum())) {
+                    bagEntityCache.writeBack(bagEntityCache.loadOrCreate(playerId));
+                    questEntityCache.writeBack(quest);
+                    NetMessageUtil.sendMessage(playerId, new MR_Response("领取奖励成功"));
+                    return;
+                }
+                NetMessageUtil.sendMessage(playerId, new MR_Response("领取奖励失败-背包容量不够"));
+            }
+        }
+        NetMessageUtil.sendMessage(playerId, new MR_Response("当前任务不存在"));
+    }
+
+    //接受任务
+    public void acceptQuest(Integer playerId, MS_Quest req) {
+        Quest quest = questEntityCache.loadOrCreate(playerId);
+        List<QuestStorage> questStorages = quest.getModel().getQuestStorages();
+        if (existQuest(req.getQuestId(), questStorages)) {
+            NetMessageUtil.sendMessage(playerId, new MR_Response("当前任务已存在"));
+            return;
+        }
+        QuestStorage questStorage = QuestManager.getQuest(req.getQuestId());
+        questStorages.add(questStorage);
+        questEntityCache.writeBack(quest);
+        NetMessageUtil.sendMessage(playerId, new MR_Response("领取任务成功"));
+    }
+
+    private boolean existQuest(Integer questId, List<QuestStorage> questStorages) {
+        if (questStorages == null) {
+            return false;
+        }
+        for (QuestStorage questStorage1 : questStorages) {
+            if (questStorage1.getTaskId().equals(questId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private QuestProcessor getQuestProcessor(Integer questType) {
+        return questProcessorMap.get(questType);
     }
 }

@@ -28,12 +28,7 @@ public class LoginAccount extends Function {
         AccountDto accountDto = new AccountDto();
         accountDto.setUsername(split[0]);
         accountDto.setPassword(split[1]);
-        Request request = RequestUtil.request(getCode(), JSON.toJSONString(accountDto).getBytes());
-        CompletableFuture<Response> future = new CompletableFuture();
-        ChannelHolder.put(request.getRequestId(), future);
-        channel.writeAndFlush(request);
-        Response response = future.get();
-        System.out.println(new String(response.getContent()));
+        RequestUtil.requestFuture(channel,getCode(), JSON.toJSONString(accountDto).getBytes());
 
     }
 }

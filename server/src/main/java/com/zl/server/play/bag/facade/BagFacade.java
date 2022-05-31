@@ -19,31 +19,29 @@ public class BagFacade {
     private BagService bagService;
 
     @NetMessageInvoke(Command.PutProps)
-    public NetMessage putProps(@Param("id") Integer playerId, MS_Props ms_props) throws Exception {
-        return bagService.putProps(playerId, ms_props);
+    public void putProps(@Param("id") Integer playerId, MS_Props req) throws Exception {
+        bagService.putProps(playerId, req);
     }
 
     @NetMessageInvoke(Command.ConsumeProps)
-    public NetMessage consumeProps(@Param("id") Integer playerId, MS_ConsumeProps ms_consumeProps) {
-        return bagService.consumeProps(playerId, ms_consumeProps);
+    public void consumeProps(@Param("id") Integer playerId, MS_ConsumeProps req) {
+        bagService.consumeProps(playerId, req);
     }
 
     @NetMessageInvoke(Command.ShowBag)
-    public MR_BagStatus showBag(@Param("id") Integer playerId) {
-        return bagService.showBag(playerId);
+    public void showBag(@Param("id") Integer playerId) {
+        bagService.showBag(playerId);
     }
 
     @NetMessageInvoke(Command.UseEquipment)
-    public NetMessage useEquipment(@Param("id") Integer playerId, MS_Equipment ms_equipment) {
-        return bagService.useEquipment(playerId, ms_equipment);
+    public void useEquipment(@Param("id") Integer playerId, MS_Equipment req) {
+        bagService.useEquipment(playerId, req);
     }
 
     @NetMessageInvoke(Command.RemoveEquipment)
-    public NetMessage removeEquipment(@Param("id") Integer playerId, MS_Equipment ms_equipment) throws Exception {
-        return bagService.removeEquipment(playerId, ms_equipment);
+    public void removeEquipment(@Param("id") Integer playerId, MS_Equipment req) throws Exception {
+        bagService.removeEquipment(playerId, req);
     }
-
-
 
 
 }

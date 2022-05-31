@@ -35,7 +35,6 @@ public class ConsumeProps extends Function {
         ms_consumProps.setModelId(scanner.nextInt());
         ms_consumProps.setIdxs(idxs);
         ms_consumProps.setNum(num);
-        Future<Response> responseFuture = RequestUtil.requestFuture(this.channel, getCode(), JSON.toJSONBytes(ms_consumProps));
-        System.out.println(new String(responseFuture.get().getContent()));
+        RequestUtil.requestFuture(this.channel, getCode(), JSON.toJSONBytes(ms_consumProps));
     }
 }

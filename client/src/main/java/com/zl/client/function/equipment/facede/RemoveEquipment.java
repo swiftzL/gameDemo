@@ -23,7 +23,6 @@ public class RemoveEquipment extends Function {
         System.out.println("输入装备id");
         MS_Equipment ms_equipment =new MS_Equipment();
         ms_equipment.setModelId(scanner.nextInt());
-        Future<Response> responseFuture = RequestUtil.requestFuture(this.channel, getCode(), JSON.toJSONBytes(ms_equipment));
-        System.out.println(new String(responseFuture.get().getContent()));
+        RequestUtil.requestFuture(this.channel, getCode(), JSON.toJSONBytes(ms_equipment));
     }
 }

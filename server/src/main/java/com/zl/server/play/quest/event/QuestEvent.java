@@ -13,11 +13,13 @@ public class QuestEvent extends ApplicationEvent {
 
     private Integer playerId;
     private Object params;
+    private int type;
 
-    public static QuestEvent valueOf(Integer playerId, Object params) {
+    public static QuestEvent valueOf(Integer playerId, int type, Object params) {
         QuestEvent event = new QuestEvent(playerId);
         event.setPlayerId(playerId);
         event.setParams(params);
+        event.setType(type);
         return event;
     }
 

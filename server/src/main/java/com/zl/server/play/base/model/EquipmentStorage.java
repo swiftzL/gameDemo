@@ -6,8 +6,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EquipmentModel {
-    private Item cloth;
-    private Item shoe;
-    private Item attack;
+public class EquipmentStorage {
+    private Item cloth;//衣服
+    private Item shoe;//鞋子
+    private Item weapon;//武器
 }

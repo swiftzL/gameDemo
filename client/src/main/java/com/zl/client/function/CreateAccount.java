@@ -14,8 +14,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 @Component
-public class CreateAccount extends Function{
-
+public class CreateAccount extends Function {
 
 
     @Override
@@ -26,8 +25,7 @@ public class CreateAccount extends Function{
         AccountDto accountDto = new AccountDto();
         accountDto.setUsername(split[0]);
         accountDto.setPassword(split[1]);
-        Future<Response> future = RequestUtil.requestFuture(channel,getCode(),JSON.toJSONString(accountDto).getBytes());
-        System.out.println(new String(future.get().getContent()));
+        RequestUtil.requestFuture(channel, getCode(), JSON.toJSONString(accountDto).getBytes());
     }
 
     @Override

@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 @Component
-public class TaskInfo extends Function{
+public class TaskInfo extends Function {
     @Override
     public int getCode() {
         return 4;
@@ -17,7 +17,6 @@ public class TaskInfo extends Function{
     @Override
     public void run() throws ExecutionException, InterruptedException {
         System.out.println("查询中.....");
-        Future<Response> responseFuture = RequestUtil.requestFuture(channel, getCode(), null);
-        System.out.println(new String(responseFuture.get().getContent()));
+        RequestUtil.requestFuture(channel, getCode(), null);
     }
 }

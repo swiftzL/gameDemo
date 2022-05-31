@@ -8,7 +8,7 @@ import java.util.List;
 
 @Setter
 @Getter
-public class QuestBox implements NetMessage {
-    private List<QuestModel> questModels;
+public class QuestBox {
+    private List<QuestStorage> questStorages;
 
 }

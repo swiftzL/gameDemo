@@ -21,7 +21,6 @@ public class ShowBag extends Function {
     @Override
     public void run() throws ExecutionException, InterruptedException {
         System.out.println("查询中");
-        Future<Response> responseFuture = RequestUtil.requestFuture(this.channel, getCode(), null);
-        System.out.println(new String(responseFuture.get().getContent()));
+        RequestUtil.requestFuture(this.channel, getCode(), null);
     }
 }

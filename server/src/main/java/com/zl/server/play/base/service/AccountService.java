@@ -8,8 +8,11 @@ import com.zl.server.play.base.packet.MS_Account;
 
 public interface AccountService {
 
-    MR_Response login(NetConnection netConnection, MS_Account ms_account);
-    NetMessage info(NetConnection netConnection);
-    MR_Response createAccount(MS_Account ms_account, NetConnection netConnection);
-    MR_Response upgrade(NetConnection netConnection);
+    void login(NetConnection netConnection, MS_Account ms_account);
+
+    void info(Integer playerId, NetConnection netConnection);
+
+    void createAccount(MS_Account ms_account, NetConnection netConnection);
+
+    void upgrade(Integer playerId, NetConnection netConnection);
 }

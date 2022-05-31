@@ -5,8 +5,8 @@ import com.zl.common.message.NetMessage;
 import com.zl.server.netty.anno.NetMessageHandler;
 import com.zl.server.netty.anno.NetMessageInvoke;
 import com.zl.server.commons.Command;
-import com.zl.server.netty.dispatch.Invoke;
-import com.zl.server.netty.dispatch.ObjectInvoke;
+import com.zl.server.netty.invoke.Invoke;
+import com.zl.server.netty.invoke.ObjectInvoke;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -25,7 +25,6 @@ public class NetMessageProcessor implements BeanFactoryAware, ApplicationRunner 
     public static Map<Integer, Class<?>> commandToClass = new HashMap<>();
 
     private ConfigurableListableBeanFactory beanFactory;
-
 
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
@@ -50,9 +49,6 @@ public class NetMessageProcessor implements BeanFactoryAware, ApplicationRunner 
                         break;
                     }
                 }
-//                if (msgClass == null) {
-//                    throw new RuntimeException("msgClass is not null" + method);
-//                }
                 Command command = netMessageInvoke.value();
                 invokes.put(command.getCode(), new ObjectInvoke(bean, method));
                 commandToClass.put(command.getCode(), msgClass);

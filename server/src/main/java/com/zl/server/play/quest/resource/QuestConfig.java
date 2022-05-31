@@ -1,6 +1,7 @@
-package com.zl.server.resource.quest;
+package com.zl.server.play.quest.resource;
 
-import com.zl.server.play.quest.model.QuestModel;
+import com.zl.server.play.quest.action.QuestAction;
+import com.zl.server.play.quest.condition.QuestCondition;
 
 /**
  * 任务配置
