@@ -67,6 +67,7 @@ public class BagServiceImpl implements BagService {
         List<Integer> list = new ArrayList<>();
         if (!verifyType(idxs, items, req)) {
             NetMessageUtil.sendMessage(playerId, new MR_Response("校验失败"));
+            return;
         }
         for (int idx : idxs) {
             if (items[idx] == null) {
@@ -82,6 +83,7 @@ public class BagServiceImpl implements BagService {
                 break;
             }
         }
+
         bag.getModel().setBagCap(bagCap);
         bagEntityCache.writeBack(bag);
         propsContext.action(req.getModelId(), playerId, req.getNum(), null);
@@ -97,48 +99,4 @@ public class BagServiceImpl implements BagService {
         NetMessageUtil.sendMessage(playerId, packet);
     }
 
-    //使用装备
-    public void useEquipment(Integer playerId, MS_Equipment req) {
-        Bag bag = bagEntityCache.loadOrCreate(playerId);
-        Item equipment = null;
-        Item[] items = bag.getModel().getItems();
-        for (int i = 0; i < items.length; i++) {
-            if (items[i].getModelId() == req.getModelId()) {
-                Item item = items[i];
-                item.setCount(item.getCount() - 1);
-                if (item.getCount() == 0) {
-                    items[i] = null;
-                }
-                equipment = item;
-                break;
-            }
-        }
-        if (equipment == null) {
-            NetMessageUtil.sendMessage(playerId, new MR_Response("装备不存在"));
-            return;
-        }
-        propsContext.action(equipment.getModelId(), playerId, 1, equipment);
-        MR_UseEquipment packet = new MR_UseEquipment();
-        packet.setModelId(req.getModelId());
-        NetMessageUtil.sendMessage(playerId, packet);
-    }
-
-    //移除装备
-    public void removeEquipment(Integer playerId, MS_Equipment req) throws Exception {
-        if (removeEquipment(playerId, req.getModelId())) {
-            MR_RemoveEquipment mr_removeEquipment = new MR_RemoveEquipment();
-            mr_removeEquipment.setModelId(req.getModelId());
-            NetMessageUtil.sendMessage(playerId, mr_removeEquipment);
-            return;
-        }
-        NetMessageUtil.sendMessage(playerId, new MR_Response("装备栏移除失败"));
-    }
-
-    private boolean removeEquipment(Integer playerId, int modelId) throws Exception {
-        if (!playerContext.addProps(playerId, modelId, 1)) {
-            return false;
-        }
-        propsContext.action(modelId, playerId, -1, null);
-        return true;
-    }
 }

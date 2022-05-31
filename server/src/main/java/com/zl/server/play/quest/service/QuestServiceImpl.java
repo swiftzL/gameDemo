@@ -112,8 +112,16 @@ public class QuestServiceImpl implements QuestService {
             NetMessageUtil.sendMessage(playerId, new MR_Response("当前任务已存在"));
             return;
         }
-        QuestResource questResource = questConfigMap.get(req.getQuestId());
 
+        QuestStorage questStorage = createQuestStorage(playerId, req.getQuestId());
+        questStorages.add(questStorage);
+        questEntityCache.writeBack(quest);
+        NetMessageUtil.sendMessage(playerId, new MR_Response("领取任务成功"));
+    }
+
+    //获取任务
+    private QuestStorage createQuestStorage(Integer playerId, Integer questId) {
+        QuestResource questResource = questConfigMap.get(questId);
         QuestStorage questStorage = new QuestStorage();
         questStorage.setTaskName(questResource.getQuestName());
         questStorage.setTaskStatus(Constants.NO);
@@ -122,10 +130,7 @@ public class QuestServiceImpl implements QuestService {
         questStorage.setMaxCount(questResource.getQuestCondition().getMaxCount());
         questStorage.setTaskType(questResource.getType());
         questStorage.setIsReceive(Constants.NO);
-
-        questStorages.add(questStorage);
-        questEntityCache.writeBack(quest);
-        NetMessageUtil.sendMessage(playerId, new MR_Response("领取任务成功"));
+        return questStorage;
     }
 
     private boolean existQuest(Integer questId, List<QuestStorage> questStorages) {

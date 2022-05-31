@@ -3,7 +3,6 @@ package com.zl.server;
 import com.alibaba.fastjson.JSON;
 import com.zl.server.cache.persist.Persist;
 import com.zl.server.play.bag.model.BagBox;
-import com.zl.server.play.bag.resource.Attack;
 import com.zl.server.play.base.dao.AccountDao;
 import com.zl.server.play.base.model.AccountBox;
 import com.zl.server.play.base.model.AttrStorage;

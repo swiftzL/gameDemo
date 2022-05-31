@@ -1,8 +1,8 @@
 package com.zl.server.play.bag.context;
 
+import com.zl.server.play.bag.resource.AttackEquip;
 import com.zl.server.play.bag.resource.param.AttackParam;
 import com.zl.server.play.bag.resource.Props;
-import com.zl.server.play.bag.resource.Attack;
 import com.zl.server.play.bag.resource.ExperienceDrug;
 import com.zl.server.play.bag.item.Item;
 import com.zl.server.play.bag.item.action.ItemAction;
@@ -80,7 +80,7 @@ public class PropsContext {
         propsMap.put(3, props3);
         itemMap.put(1, ExperienceDrug.class);
         itemMap.put(2, ExperienceDrug.class);
-        itemMap.put(3, Attack.class);
+        itemMap.put(3, AttackEquip.class);
 
     }
 

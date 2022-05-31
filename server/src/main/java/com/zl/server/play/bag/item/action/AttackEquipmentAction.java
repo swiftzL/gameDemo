@@ -7,7 +7,7 @@ import com.zl.server.play.bag.context.PropsContext;
 import com.zl.server.play.bag.item.Item;
 import com.zl.server.play.bag.item.ItemType;
 import com.zl.server.play.bag.resource.param.AttackParam;
-import com.zl.server.play.bag.packet.MR_Attack;
+import com.zl.server.play.equip.packet.MR_Attack;
 import com.zl.server.play.base.model.Account;
 import com.zl.server.play.base.model.EquipmentStorage;
 import com.zl.server.play.player.PlayerContext;
@@ -30,6 +30,7 @@ public class AttackEquipmentAction implements ItemAction {
         playerContext.addAttack(playerId, attack);
         MR_Attack mr_attack = new MR_Attack();
         mr_attack.setAttack(attack);
+
         Account account = entityCache.load(playerId);
         EquipmentStorage equipmentStorage = account.getModel().getEquipmentStorage();
         equipmentStorage.setWeapon(item);
