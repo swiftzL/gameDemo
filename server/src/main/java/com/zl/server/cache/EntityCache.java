@@ -82,11 +82,6 @@ public class EntityCache<PK, T> implements Cache<PK, T> {
         });
     }
 
-    @Override
-    public void update(PK id, T t) {
-        cache.put(id, t);
-    }
-
     public void writeBack(T t) {
         persist.put(t);
     }

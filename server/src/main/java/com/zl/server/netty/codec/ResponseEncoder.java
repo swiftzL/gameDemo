@@ -1,7 +1,7 @@
 package com.zl.server.netty.codec;
 
 import com.alibaba.fastjson.JSON;
-import com.zl.server.commons.Constants;
+import com.zl.server.netty.commons.CodeConstants;
 import com.zl.server.netty.model.Response;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -13,7 +13,7 @@ public class ResponseEncoder extends MessageToByteEncoder<Response> {
 
     @Override
     protected void encode(ChannelHandlerContext ctx, Response msg, ByteBuf out) throws Exception {
-        out.writeInt(Constants.FLAG);
+        out.writeInt(CodeConstants.FLAG);
         out.writeInt(msg.getRequestId());
         out.writeInt(msg.getStatusCode());
         String s = JSON.toJSONString(msg.getContent());

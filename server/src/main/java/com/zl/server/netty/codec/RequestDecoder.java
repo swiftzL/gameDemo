@@ -1,7 +1,7 @@
 package com.zl.server.netty.codec;
 
 import com.alibaba.fastjson.JSON;
-import com.zl.server.commons.Constants;
+import com.zl.server.netty.commons.CodeConstants;
 import com.zl.server.netty.model.Request;
 import com.zl.server.netty.config.NetMessageProcessor;
 import io.netty.buffer.ByteBuf;
@@ -27,7 +27,7 @@ public class RequestDecoder extends ByteToMessageDecoder {
             return;
         }
         in.markReaderIndex();
-        if (Constants.FLAG != in.readInt()) {
+        if (CodeConstants.FLAG != in.readInt()) {
             ctx.channel().close();
             log.error("错误请求");
         }

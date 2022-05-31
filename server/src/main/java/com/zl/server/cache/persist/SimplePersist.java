@@ -1,6 +1,7 @@
 package com.zl.server.cache.persist;
 
 import com.alibaba.fastjson.JSON;
+import com.zl.server.cache.config.CacheConfig;
 import com.zl.server.cache.context.EntityManagerContext;
 import com.zl.server.commons.AbstractBlobModelEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -20,12 +21,13 @@ public class SimplePersist implements Persist {
 
     @Autowired
     private EntityManagerContext entityManagerContext;
+
+    private CacheConfig cacheConfig;
+
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
     private Deque<Object> elements = new ConcurrentLinkedDeque<>();
     private Lock lock = new ReentrantLock();
     private volatile boolean running = true;
-    @Value("${gamedemo.persist.num}")
-    private int persistNum;
 
 
     @Override
@@ -55,13 +57,16 @@ public class SimplePersist implements Persist {
     @Override
     public void run() {
         if (running && !elements.isEmpty()) {
-            for (int i = 0; i < this.persistNum; i++) {
+            for (int i = 0; i < this.cacheConfig.getPersistNum(); i++) {
+                if (elements.isEmpty()) {
+                    return;
+                }
                 Object obj = elements.removeFirst();
                 log.info("persist {}", obj);
                 try {
                     persist(obj);
                 } catch (Exception e) {
-                    log.error("exception is {}", e);
+                    log.error("exception ", e);
                 }
             }
         }

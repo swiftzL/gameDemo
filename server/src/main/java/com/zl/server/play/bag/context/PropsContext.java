@@ -22,8 +22,11 @@ import java.util.Map;
 @Component
 public class PropsContext {
 
+    //道具配置表 id - item
     private static Map<Integer, Class<? extends Item>> itemMap = new HashMap<>();
+    //道具参数配置表
     private static Map<Integer, Props> propsMap = new HashMap<>();
+    //道具使用方法配置表
     private Map<Integer, ItemAction> itemActionMap = new HashMap<>();
 
 
@@ -44,9 +47,15 @@ public class PropsContext {
     }
 
 
-    public static Item getItem(int id, int count) throws Exception {
+    public static Item getItem(int id, int count) {
         Class<? extends Item> aClass = itemMap.get(id);
-        Item item = aClass.newInstance();
+        Item item;
+        try {
+            item = aClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
         item.setModelId(id);
         item.setCount(count);
         return item;
@@ -91,8 +100,8 @@ public class PropsContext {
      * @param playerId
      * @param num
      */
-    public void action(int modelId, int playerId, int num,Item item) {
-        this.itemActionMap.get(getProps(modelId).getType()).action(modelId, playerId, num,item);
+    public void action(int modelId, int playerId, int num, Item item) {
+        this.itemActionMap.get(getProps(modelId).getType()).action(modelId, playerId, num, item);
     }
 
 

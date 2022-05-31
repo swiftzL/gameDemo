@@ -11,6 +11,7 @@ import com.zl.server.play.equip.packet.MR_UseEquipment;
 import com.zl.server.play.equip.packet.MS_Equipment;
 import com.zl.server.play.base.packet.MR_Response;
 import com.zl.server.play.player.PlayerServiceContext;
+import com.zl.server.play.player.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -72,7 +73,8 @@ public class EquipServiceImpl implements EquipService {
     }
 
     private boolean removeEquipment(Integer playerId, int modelId) throws Exception {
-        if (!playerContext.addProps(playerId, modelId, 1)) {
+        PlayerService playerService = PlayerServiceContext.getPlayerService();
+        if (!playerService.addProps(playerId, modelId, 1)) {
             return false;
         }
         propsContext.action(modelId, playerId, -1, null);

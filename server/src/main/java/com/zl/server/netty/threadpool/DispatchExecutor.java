@@ -1,5 +1,6 @@
 package com.zl.server.netty.threadpool;
 
+import io.netty.util.concurrent.DefaultThreadFactory;
 import lombok.extern.slf4j.Slf4j;
 import sun.nio.ch.ThreadPool;
 
@@ -12,7 +13,6 @@ public class DispatchExecutor implements TaskExecutor {
     private Executor[] works;
     private int threadSize;
     private Chooser chooser;
-    private ThreadFactory threadFactory = new PlayThreadFactory();
 
     public static class ExecutorHolder {
         public static TaskExecutor INSTANCE = new DispatchExecutor(4);
@@ -29,7 +29,7 @@ public class DispatchExecutor implements TaskExecutor {
         for (int i = 0; i < this.threadSize; i++) {
             Executor executor = new ThreadPoolExecutor(1, 1,
                     0L, TimeUnit.MILLISECONDS,
-                    new LinkedBlockingQueue<Runnable>(), this.threadFactory);
+                    new LinkedBlockingQueue<Runnable>(), new DefaultThreadFactory("player thread pool"));
             this.works[i] = executor;
         }
     }
@@ -48,24 +48,6 @@ public class DispatchExecutor implements TaskExecutor {
             return (id) -> id & (threadSize - 1);
         } else {
             return (id) -> id % threadSize;
-        }
-    }
-
-    static class PlayThreadFactory implements ThreadFactory {
-        private final AtomicInteger threadNumber = new AtomicInteger(1);
-        private final String namePrefix;
-
-        PlayThreadFactory() {
-            namePrefix = "play thread-";
-        }
-
-        public Thread newThread(Runnable r) {
-            Thread t = new Thread(null, r,
-                    namePrefix + threadNumber.getAndIncrement(),
-                    0);
-            if (t.isDaemon())
-                t.setDaemon(false);
-            return t;
         }
     }
 }

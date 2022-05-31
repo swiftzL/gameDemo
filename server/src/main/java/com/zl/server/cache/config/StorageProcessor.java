@@ -24,19 +24,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class StorageProcessor implements BeanPostProcessor, ApplicationContextAware, Ordered {
-
-    private ApplicationContext applicationContext;
-    private Map<Class<?>, Cache> cacheMap = new HashMap<>();
+public class StorageProcessor implements BeanPostProcessor, Ordered {
     @Autowired
     private EntityManagerContext entityManagerContext;
+
     @Autowired
     private Persist persist;
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
+    private Map<Class<?>, Cache> cacheMap = new HashMap<>();
+
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
@@ -54,6 +50,7 @@ public class StorageProcessor implements BeanPostProcessor, ApplicationContextAw
 
     /**
      * 注入缓存字段
+     *
      * @param bean
      * @param field
      */
@@ -76,6 +73,11 @@ public class StorageProcessor implements BeanPostProcessor, ApplicationContextAw
 
     }
 
+    /**
+     * 获取缓存容器class
+     * @param entityClass
+     * @return
+     */
     public Class<?> getCacheClass(Class<?> entityClass) {
         if (!AbstractBlobModelEntity.class.isAssignableFrom(entityClass)) {
             return null;
@@ -85,6 +87,11 @@ public class StorageProcessor implements BeanPostProcessor, ApplicationContextAw
         return (Class<?>) actualTypeArguments[0];
     }
 
+    /**
+     * 获取entity class类型
+     * @param field
+     * @return
+     */
     public Class<?> getEntityType(Field field) {
         Type genericType = field.getGenericType();
         Type[] actualTypeArguments = ((ParameterizedType) genericType).getActualTypeArguments();

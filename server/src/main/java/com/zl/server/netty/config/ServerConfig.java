@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 @Getter
 @Configuration
-@ConfigurationProperties(prefix = "gamedemo")
+@ConfigurationProperties(prefix = "gamedemo.server")
 public class ServerConfig {
     private String host;
     private Integer port;

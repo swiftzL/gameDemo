@@ -34,12 +34,22 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         NetConnection netConnection = getConnection(ctx.channel());
         Integer id = netConnection.getAttr("id", Integer.class);
+        Request request = (Request) msg;
+        Invoke invoke = invokes.get(request.getCommand());
         if (id == null) {
-            exec(netConnection, msg);
+            exec(netConnection, invoke, request);
         } else {
             executor.execute(new Task(id, () -> {
                 try {
-                    exec(netConnection, msg);
+                    if (invoke == null) {
+                        netConnection.sendMessage(new MR_Response("指令错误"));
+                        return;
+                    }
+                    //拦截
+                    if (!intercept.preHandle(netConnection, request)) {
+                        return;
+                    }
+                    exec(netConnection, invoke, request);
                 } catch (Exception exception) {
                     log.error("exec exception " + exception);
                 }
@@ -47,19 +57,9 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-
-    private void exec(NetConnection netConnection, Object msg) {
-        Request request = (Request) msg;
-        Invoke invoke = invokes.get(request.getCommand());
-        if (invoke == null) {
-            netConnection.sendMessage(new MR_Response("指令错误"));
-            return;
-        }
-        //拦截
-        if (!intercept.preHandle(netConnection, request)) {
-            return;
-        }
-        Object[] args = parseArgs(invoke, netConnection, request);
+    //执行业务
+    private void exec(NetConnection netConnection, Invoke invoke, Request msg) {
+        Object[] args = parseArgs(invoke, netConnection, msg);
         Object obj = null;
         try {
             obj = invoke.invoke(args);
@@ -77,7 +77,7 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
             response.setStatusCode(200);
             response.setContent(obj);
         }
-        response.setRequestId(request.getRequestId());
+        response.setRequestId(msg.getRequestId());
         netConnection.sendMessage(response);
     }
 

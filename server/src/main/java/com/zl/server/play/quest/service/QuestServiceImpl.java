@@ -2,10 +2,11 @@ package com.zl.server.play.quest.service;
 
 import com.zl.server.cache.EntityCache;
 import com.zl.server.cache.anno.Storage;
-import com.zl.server.commons.Constants;
 import com.zl.server.netty.utils.NetMessageUtil;
 import com.zl.server.play.bag.model.Bag;
 import com.zl.server.play.player.PlayerServiceContext;
+import com.zl.server.play.player.service.PlayerService;
+import com.zl.server.play.quest.commons.QuestConstants;
 import com.zl.server.play.quest.config.AwardManager;
 import com.zl.server.play.quest.config.QuestResourceConfig;
 import com.zl.server.play.quest.event.QuestEvent;
@@ -36,7 +37,6 @@ public class QuestServiceImpl implements QuestService {
     @Storage
     private EntityCache<Integer, Bag> bagEntityCache;
     private Map<Integer, QuestProcessor> questProcessorMap;
-    private Map<Integer, List<QuestBox>> idToQuest = new HashMap<>();
     private Map<Integer, QuestResource> questConfigMap = QuestResourceConfig.allQuestConfigMap;
 
     @Autowired
@@ -47,6 +47,7 @@ public class QuestServiceImpl implements QuestService {
         }
     }
 
+    @Override
     public void showTask(Integer playerId, NetConnection netConnection) {
         Quest quest = questEntityCache.loadOrCreate(playerId);
         List<QuestStorage> questStorages = quest.getModel().getQuestStorages();
@@ -56,11 +57,12 @@ public class QuestServiceImpl implements QuestService {
 
     }
 
+    @Override
     public void handleQuestEvent(QuestEvent questEvent) {
         Integer playerId = questEvent.getPlayerId();
         Quest quest = questEntityCache.loadOrCreate(playerId);
         for (QuestStorage questStorage : quest.getModel().getQuestStorages()) {
-            if (questStorage.getTaskStatus().equals(1)) {//跳过完成的任务
+            if (questStorage.getTaskStatus().equals(QuestConstants.YES)) {//跳过完成的任务
                 continue;
             }
             QuestProcessor questProcessor = getQuestProcessor(questStorage.getTaskType());
@@ -74,26 +76,31 @@ public class QuestServiceImpl implements QuestService {
     //校验背包
 
     //领取
+    @Override
     public void drawAward(Integer playerId, MS_Quest req) throws Exception {
         Quest quest = questEntityCache.loadOrCreate(playerId);
         QuestBox questBox = quest.getModel();
         List<QuestStorage> questStorages = questBox.getQuestStorages();
-        if (PlayerServiceContext.INSTANCE.bagIsFull(playerId)) {
+        PlayerService playerService = PlayerServiceContext.getPlayerService();
+
+        //背包是否是否满了
+        if (playerService.bagIsFull(playerId)) {
             NetMessageUtil.sendMessage(playerId, new MR_Response("背包容量满了"));
             return;
         }
         for (QuestStorage questStorage : questStorages) {
             if (questStorage.getTaskId().equals(req.getQuestId())) {
-                if (questStorage.getIsReceive().equals(Constants.YES)) {
+                if (questStorage.getIsReceive().equals(QuestConstants.YES)) {
                     NetMessageUtil.sendMessage(playerId, new MR_Response("当前奖励已经领取"));
                     return;
                 }
                 //修改状态
-                questStorage.setIsReceive(Constants.YES);
+                questStorage.setIsReceive(QuestConstants.YES);
                 questEntityCache.writeBack(quest);
-                //添加背包
+                //获取奖励
                 Award award = AwardManager.awardMap.get(req.getQuestId());
-                if (PlayerServiceContext.INSTANCE.addProps(playerId, award.getModeId(), award.getNum())) {
+                //添加背包
+                if (playerService.addProps(playerId, award.getModeId(), award.getNum())) {
                     NetMessageUtil.sendMessage(playerId, new MR_Response("领取奖励成功"));
                 } else {
                     NetMessageUtil.sendMessage(playerId, new MR_Response("领取奖励失败-背包容量不够"));
@@ -104,6 +111,7 @@ public class QuestServiceImpl implements QuestService {
     }
 
     //接受任务
+    @Override
     public void acceptQuest(Integer playerId, MS_Quest req) {
         Quest quest = questEntityCache.loadOrCreate(playerId);
         List<QuestStorage> questStorages = quest.getModel().getQuestStorages();
@@ -123,15 +131,16 @@ public class QuestServiceImpl implements QuestService {
         QuestResource questResource = questConfigMap.get(questId);
         QuestStorage questStorage = new QuestStorage();
         questStorage.setTaskName(questResource.getQuestName());
-        questStorage.setTaskStatus(Constants.NO);
+        questStorage.setTaskStatus(QuestConstants.NO);
         questStorage.setTaskId(questResource.getId());
         questStorage.setCurrent(questResource.getQuestCondition().getCurrent(playerId));
         questStorage.setMaxCount(questResource.getQuestCondition().getMaxCount());
         questStorage.setTaskType(questResource.getType());
-        questStorage.setIsReceive(Constants.NO);
+        questStorage.setIsReceive(QuestConstants.NO);
         return questStorage;
     }
 
+    //任务是否存在
     private boolean existQuest(Integer questId, List<QuestStorage> questStorages) {
         if (questStorages == null) {
             return false;
@@ -143,7 +152,6 @@ public class QuestServiceImpl implements QuestService {
         }
         return false;
     }
-
     private QuestProcessor getQuestProcessor(Integer questType) {
         return questProcessorMap.get(questType);
     }

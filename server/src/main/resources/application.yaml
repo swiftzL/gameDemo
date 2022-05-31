@@ -5,7 +5,9 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://112.74.53.204:3306/gamedemo?useSSL=false&useUnicode=true&characterEncoding=UTF-8
 gamedemo:
-  host: 127.0.0.1
-  port: 8088
-  persist:
-    num: 5
+  server:
+    host: 127.0.0.1
+    port: 8088
+  cache:
+    persist:
+      num: 5

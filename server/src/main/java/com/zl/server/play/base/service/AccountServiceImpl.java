@@ -38,7 +38,6 @@ public class AccountServiceImpl implements AccountService {
         netConnection.setAttr("id", account.getId());
 
         NetMessageUtil.addConnection(account.getId(), netConnection);
-
         applicationContext.publishEvent(LoginEvent.valueOf(account.getId(), this, null));
         netConnection.sendMessage(new MR_Response("登录成功"));
     }
@@ -50,7 +49,7 @@ public class AccountServiceImpl implements AccountService {
         packet.setUsername(account.getUsername());
         packet.setLevel(account.getLevel());
 
-        //setvo
+        //set vo
         AccountVo accountVo = new AccountVo();
         AttrStorage attrStorage = account.getModel().getAttrStorage();
         accountVo.setAttack(attrStorage.getAttack());

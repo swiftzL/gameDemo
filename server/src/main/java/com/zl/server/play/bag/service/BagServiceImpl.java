@@ -11,6 +11,7 @@ import com.zl.server.play.base.model.Account;
 import com.zl.server.play.base.packet.MR_Response;
 import com.zl.server.play.bag.item.Item;
 import com.zl.server.play.player.PlayerServiceContext;
+import com.zl.server.play.player.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -33,15 +34,16 @@ public class BagServiceImpl implements BagService {
     private PropsContext propsContext;
 
     @Override
-    public void putProps(Integer playerId, MS_Props req) throws Exception {
-        if (playerContext.addProps(playerId, req.getPropsId(), req.getNum())) {
+    public void putProps(Integer playerId, MS_Props req) {
+        PlayerService playerService = PlayerServiceContext.getPlayerService();
+        if (playerService.addProps(playerId, req.getPropsId(), req.getNum())) {
             NetMessageUtil.sendMessage(playerId, new MR_Response("添加成功"));
             return;
         }
         NetMessageUtil.sendMessage(playerId, new MR_Response("背包容量不够"));
     }
 
-
+    //校验道具类型
     private boolean verifyType(int[] idxs, Item[] items, MS_ConsumeProps req) {
         int num = 0;
         for (int idx : idxs) {
@@ -63,7 +65,7 @@ public class BagServiceImpl implements BagService {
         Bag bag = bagEntityCache.loadOrCreate(playerId);
         int bagCap = bag.getModel().getBagCap();
         Item[] items = bag.getModel().getItems();
-        List<Integer> list = new ArrayList<>();
+
         if (!verifyType(idxs, items, req)) {
             NetMessageUtil.sendMessage(playerId, new MR_Response("校验失败"));
             return;

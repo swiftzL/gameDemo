@@ -7,10 +7,13 @@ import com.zl.server.play.bag.context.PropsContext;
 import com.zl.server.play.bag.item.Item;
 import com.zl.server.play.bag.item.ItemType;
 import com.zl.server.play.bag.resource.param.ExperienceDrugParam;
+import com.zl.server.play.base.event.UpgradeEvent;
 import com.zl.server.play.base.model.Account;
 import com.zl.server.play.base.packet.MR_AccountInfo;
 import com.zl.server.play.player.PlayerServiceContext;
+import com.zl.server.play.player.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,6 +24,9 @@ public class ExperienceDrugAction implements ItemAction {
     @Autowired
     private PlayerServiceContext playerContext;
 
+    @Autowired
+    private ApplicationContext applicationContext;
+
     @Override
     public void action(int modelId, Integer playerId, int num, Item item) {
         ExperienceDrugParam param = PropsContext.getItemParam(modelId, ExperienceDrugParam.class);
@@ -29,9 +35,13 @@ public class ExperienceDrugAction implements ItemAction {
 
     private void handleExperience(Integer playerId, int num, int level) {
         int currentLevel = num * level;
-        playerContext.addLevel(playerId, currentLevel);
+        PlayerService playerService = PlayerServiceContext.getPlayerService();
+        playerService.addLevel(playerId, currentLevel);
+
         MR_AccountInfo mr_accountInfo = new MR_AccountInfo();
         mr_accountInfo.setLevel(currentLevel);
+
+        applicationContext.publishEvent(UpgradeEvent.valueOf(playerId, this, null));
         NetMessageUtil.sendMessage(playerId, mr_accountInfo);
     }
 

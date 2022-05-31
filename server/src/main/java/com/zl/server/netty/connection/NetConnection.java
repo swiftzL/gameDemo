@@ -12,7 +12,7 @@ public class NetConnection {
     private volatile Channel channel;
     private Map<String, Object> attrs = new ConcurrentHashMap<>();
     private static Integer notificationId = -1;
-    public static AttributeKey<NetConnection> netConnection = AttributeKey.valueOf("net_connection");
+    public static AttributeKey<NetConnection> netConnection = AttributeKey.valueOf("netConnection");
 
     public NetConnection(Channel channel) {
         this.channel = channel;
@@ -33,7 +33,7 @@ public class NetConnection {
         return (T) attrs.get(key);
     }
 
-    public boolean hashAttr(String key){
+    public boolean hashAttr(String key) {
         return attrs.containsKey(key);
     }
 

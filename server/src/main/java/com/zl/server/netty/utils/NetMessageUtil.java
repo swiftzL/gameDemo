@@ -7,6 +7,9 @@ import com.zl.server.play.base.packet.MR_Response;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * 消息发送工具类
+ */
 public class NetMessageUtil {
 
     private static Map<Integer, NetConnection> netConnectionMap = new ConcurrentHashMap<>();

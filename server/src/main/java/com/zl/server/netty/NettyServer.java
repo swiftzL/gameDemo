@@ -18,6 +18,7 @@ import javax.annotation.PostConstruct;
 
 @Component
 public class NettyServer {
+
     @Autowired
     private ServerConfig serverConfig;
 
@@ -31,16 +32,14 @@ public class NettyServer {
         this.serverBootstrap = serverBootstrap;
     }
 
-    public void run() throws InterruptedException {
-        serverBootstrap.bind(serverConfig.getHost(), serverConfig.getPort()).sync();
-    }
-
-
     static class ServerHandlerInitial extends ChannelInitializer<Channel> {
-
         @Override
         protected void initChannel(Channel ch) throws Exception {
             ch.pipeline().addLast(new RequestDecoder()).addLast(new ResponseEncoder()).addLast(new ServiceHandler());
         }
+    }
+
+    public void run() throws InterruptedException {
+        serverBootstrap.bind(serverConfig.getHost(), serverConfig.getPort()).sync();
     }
 }

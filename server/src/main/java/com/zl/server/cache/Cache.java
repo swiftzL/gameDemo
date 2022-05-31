@@ -6,5 +6,4 @@ public interface Cache<PK,T> {
 
     T loadOrCreate(PK id);
 
-    void update(PK id,T t);
 }

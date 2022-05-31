@@ -16,7 +16,7 @@ public class BagFacade {
     private BagService bagService;
 
     @NetMessageInvoke(Command.PutProps)
-    public void putProps(@Param("id") Integer playerId, MS_Props req) throws Exception {
+    public void putProps(@Param("id") Integer playerId, MS_Props req) {
         bagService.putProps(playerId, req);
     }
 
