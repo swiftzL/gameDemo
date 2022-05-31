@@ -4,11 +4,10 @@ import com.zl.server.cache.EntityCache;
 import com.zl.server.cache.anno.Storage;
 import com.zl.server.netty.utils.NetMessageUtil;
 import com.zl.server.play.bag.model.Bag;
-import com.zl.server.play.player.PlayerServiceContext;
+import com.zl.server.GameContext;
 import com.zl.server.play.player.service.PlayerService;
 import com.zl.server.play.quest.commons.QuestConstants;
-import com.zl.server.play.quest.config.AwardManager;
-import com.zl.server.play.quest.config.QuestResourceConfig;
+import com.zl.server.play.quest.context.QuestResourceContext;
 import com.zl.server.play.quest.event.QuestEvent;
 import com.zl.server.play.quest.model.Quest;
 import com.zl.server.netty.connection.NetConnection;
@@ -19,7 +18,7 @@ import com.zl.server.play.quest.packet.MR_Quests;
 import com.zl.server.play.quest.packet.MS_Quest;
 import com.zl.server.play.quest.resource.Award;
 import com.zl.server.play.quest.resource.QuestConfig;
-import com.zl.server.play.quest.resource.QuestProcessor;
+import com.zl.server.play.quest.processor.QuestProcessor;
 import com.zl.server.play.quest.resource.QuestResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +36,7 @@ public class QuestServiceImpl implements QuestService {
     @Storage
     private EntityCache<Integer, Bag> bagEntityCache;
     private Map<Integer, QuestProcessor> questProcessorMap;
-    private Map<Integer, QuestResource> questConfigMap = QuestResourceConfig.allQuestConfigMap;
+    private Map<Integer, QuestResource> questConfigMap = QuestResourceContext.allQuestConfigMap;
 
     @Autowired
     public void setQuestProcessorMap(Set<QuestProcessor> questProcessors) {
@@ -81,7 +80,7 @@ public class QuestServiceImpl implements QuestService {
         Quest quest = questEntityCache.loadOrCreate(playerId);
         QuestBox questBox = quest.getModel();
         List<QuestStorage> questStorages = questBox.getQuestStorages();
-        PlayerService playerService = PlayerServiceContext.getPlayerService();
+        PlayerService playerService = GameContext.getPlayerService();
 
         //背包是否是否满了
         if (playerService.bagIsFull(playerId)) {
@@ -98,7 +97,7 @@ public class QuestServiceImpl implements QuestService {
                 questStorage.setIsReceive(QuestConstants.YES);
                 questEntityCache.writeBack(quest);
                 //获取奖励
-                Award award = AwardManager.awardMap.get(req.getQuestId());
+                Award award = questConfigMap.get(questStorage.getTaskId()).getAward();
                 //添加背包
                 if (playerService.addProps(playerId, award.getModeId(), award.getNum())) {
                     NetMessageUtil.sendMessage(playerId, new MR_Response("领取奖励成功"));
@@ -152,6 +151,7 @@ public class QuestServiceImpl implements QuestService {
         }
         return false;
     }
+
     private QuestProcessor getQuestProcessor(Integer questType) {
         return questProcessorMap.get(questType);
     }

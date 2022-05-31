@@ -9,11 +9,7 @@ import com.zl.server.play.bag.model.BagBox;
 import com.zl.server.play.bag.resource.Props;
 import com.zl.server.play.base.model.Account;
 import com.zl.server.play.base.model.AttrStorage;
-import com.zl.server.play.player.PlayerServiceContext;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
 
 @Service
 public class PlayerServiceImpl implements PlayerService {
@@ -50,12 +46,10 @@ public class PlayerServiceImpl implements PlayerService {
         Bag bag = bagEntityCache.loadOrCreate(playerId);
         BagBox model = bag.getModel();
         int num = propsNum;
-        if (model.getBagCap() < (num / props.getCount()) + (num % props.getCount() == 0 ? 0 : 1)) {
-            return false;
-        }
-        return true;
+        return model.getBagCap() >= (num / props.getCount()) + (num % props.getCount() == 0 ? 0 : 1);
     }
 
+    //整理
     public boolean addProps(Integer playerId, int propsId, int propsNum) {
         //添加背包前先校验
         if (!verifyBag(playerId, propsId, propsNum)) {
@@ -67,11 +61,16 @@ public class PlayerServiceImpl implements PlayerService {
         int num = propsNum;
 
         Item[] items = model.getItems();
-        for (int i = 0; i < items.length && num != 0; i++) {
-            if (items[i] == null) {
-                int count = num >= props.getCount() ? props.getCount() : num;
-                items[i] = PropsContext.getItem(props.getId(), count);
+        for (int i = 0; i < items.length && num > 0; i++) {
+            Item item = items[i];
+            if (item == null) {
+                int count = Math.min(num, props.getCount());
+                items[i] = PropsContext.createItem(props.getId(), count);
                 num -= count;
+            } else if (item.getModelId() == propsId && item.getCount() < props.getCount()) {
+                int remainSpace = props.getCount() - items[i].getCount();
+                item.setCount(Math.min(remainSpace, num) + item.getCount());
+                num -= remainSpace;
             }
         }
         bagEntityCache.writeBack(bag);

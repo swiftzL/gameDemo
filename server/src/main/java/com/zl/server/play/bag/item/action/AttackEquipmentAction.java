@@ -10,7 +10,7 @@ import com.zl.server.play.bag.resource.param.AttackParam;
 import com.zl.server.play.equip.packet.MR_Attack;
 import com.zl.server.play.base.model.Account;
 import com.zl.server.play.base.model.EquipmentStorage;
-import com.zl.server.play.player.PlayerServiceContext;
+import com.zl.server.GameContext;
 import com.zl.server.play.player.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,14 +22,14 @@ public class AttackEquipmentAction implements ItemAction {
     private EntityCache<Integer, Account> entityCache;
 
     @Autowired
-    private PlayerServiceContext playerContext;
+    private GameContext playerContext;
 
     @Override
     public void action(int modelId, Integer playerId, int num, Item item) {
         AttackParam itemParam = PropsContext.getItemParam(modelId, AttackParam.class);
 
         int attack = itemParam.getAttack() * num;
-        PlayerService playerService = PlayerServiceContext.getPlayerService();
+        PlayerService playerService = GameContext.getPlayerService();
         playerService.addAttack(playerId, attack);
 
         MR_Attack mr_attack = new MR_Attack();

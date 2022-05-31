@@ -7,7 +7,6 @@ import com.zl.server.play.quest.condition.QuestCondition;
  * 任务配置
  */
 public interface QuestConfig {
-
     QuestCondition getFinishCondition();
     QuestAction getQuestAction();
     int getType();

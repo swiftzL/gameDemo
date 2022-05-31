@@ -47,7 +47,7 @@ public class PropsContext {
     }
 
 
-    public static Item getItem(int id, int count) {
+    public static Item createItem(int id, int count) {
         Class<? extends Item> aClass = itemMap.get(id);
         Item item;
         try {

@@ -10,7 +10,7 @@ import com.zl.server.play.bag.resource.param.ExperienceDrugParam;
 import com.zl.server.play.base.event.UpgradeEvent;
 import com.zl.server.play.base.model.Account;
 import com.zl.server.play.base.packet.MR_AccountInfo;
-import com.zl.server.play.player.PlayerServiceContext;
+import com.zl.server.GameContext;
 import com.zl.server.play.player.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -22,7 +22,7 @@ public class ExperienceDrugAction implements ItemAction {
     private EntityCache<Integer, Account> entityCache;
 
     @Autowired
-    private PlayerServiceContext playerContext;
+    private GameContext playerContext;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -35,7 +35,7 @@ public class ExperienceDrugAction implements ItemAction {
 
     private void handleExperience(Integer playerId, int num, int level) {
         int currentLevel = num * level;
-        PlayerService playerService = PlayerServiceContext.getPlayerService();
+        PlayerService playerService = GameContext.getPlayerService();
         playerService.addLevel(playerId, currentLevel);
 
         MR_AccountInfo mr_accountInfo = new MR_AccountInfo();

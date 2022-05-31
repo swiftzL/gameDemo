@@ -85,6 +85,4 @@ public class EntityCache<PK, T> implements Cache<PK, T> {
     public void writeBack(T t) {
         persist.put(t);
     }
-
-
 }

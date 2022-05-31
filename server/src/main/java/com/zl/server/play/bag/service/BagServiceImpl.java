@@ -10,13 +10,11 @@ import com.zl.server.play.bag.packet.*;
 import com.zl.server.play.base.model.Account;
 import com.zl.server.play.base.packet.MR_Response;
 import com.zl.server.play.bag.item.Item;
-import com.zl.server.play.player.PlayerServiceContext;
+import com.zl.server.GameContext;
 import com.zl.server.play.player.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class BagServiceImpl implements BagService {
@@ -28,14 +26,18 @@ public class BagServiceImpl implements BagService {
     private EntityCache<Integer, Account> accountEntityCache;
 
     @Autowired
-    private PlayerServiceContext playerContext;
+    private GameContext playerContext;
 
     @Autowired
     private PropsContext propsContext;
 
     @Override
     public void putProps(Integer playerId, MS_Props req) {
-        PlayerService playerService = PlayerServiceContext.getPlayerService();
+        if (req.getNum() <= 0) {
+            NetMessageUtil.sendMessage(playerId, new MR_Response("非法参数"));
+            return;
+        }
+        PlayerService playerService = GameContext.getPlayerService();
         if (playerService.addProps(playerId, req.getPropsId(), req.getNum())) {
             NetMessageUtil.sendMessage(playerId, new MR_Response("添加成功"));
             return;
@@ -59,7 +61,12 @@ public class BagServiceImpl implements BagService {
         return num >= req.getNum();
     }
 
+    @Override
     public void consumeProps(Integer playerId, MS_ConsumeProps req) {
+        if (req.getNum() <= 0) {
+            NetMessageUtil.sendMessage(playerId, new MR_Response("非法参数"));
+            return;
+        }
         int[] idxs = req.getIdxs();
         int num = req.getNum();
         Bag bag = bagEntityCache.loadOrCreate(playerId);

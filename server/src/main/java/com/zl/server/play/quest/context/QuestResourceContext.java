@@ -1,4 +1,4 @@
-package com.zl.server.play.quest.config;
+package com.zl.server.play.quest.context;
 
 import com.zl.server.play.base.commons.OperationType;
 import com.zl.server.play.quest.action.LevelUpQuestAction;
@@ -8,6 +8,7 @@ import com.zl.server.play.quest.condition.LevelUpQuestCondition;
 import com.zl.server.play.quest.condition.LoginQuestCondition;
 import com.zl.server.play.quest.condition.QuestCondition;
 import com.zl.server.play.quest.commons.QuestType;
+import com.zl.server.play.quest.resource.Award;
 import com.zl.server.play.quest.resource.QuestConfig;
 import com.zl.server.play.quest.resource.QuestResource;
 
@@ -18,12 +19,15 @@ import java.util.Map;
  * 任务配置表
  */
 
-public class QuestResourceConfig {
+public class QuestResourceContext {
 
     public static Map<Integer, QuestResource> allQuestConfigMap = new HashMap<>();
+    public static Map<Integer, QuestConfig> mainQuestConfigMap = new HashMap<>();
 
-    public static Map<Integer, QuestConfig> mainQuestResources() {
-        Map<Integer, QuestConfig> questConfigMap = new HashMap<>();
+
+
+    static {
+
 
         //升级
         QuestResource questResource1 = new QuestResource();
@@ -34,6 +38,7 @@ public class QuestResourceConfig {
         questResource1.setId(1);
         questResource1.setQuestName("提升等级到24级");
         questResource1.setType(QuestType.Main.getCode());
+        questResource1.setAward( new Award(1, 2));
 
 
         //登录
@@ -45,11 +50,16 @@ public class QuestResourceConfig {
         questResource2.setId(2);
         questResource2.setType(QuestType.Main.getCode());
         questResource2.setQuestName("登录两次");
-        questConfigMap.put(1, questResource1);
-        questConfigMap.put(2, questResource2);
+        questResource2.setAward(new Award(2, 2));
+
+        mainQuestConfigMap.put(1, questResource1);
+        mainQuestConfigMap.put(2, questResource2);
 
         allQuestConfigMap.put(1, questResource1);
         allQuestConfigMap.put(2, questResource2);
-        return questConfigMap;
+    }
+
+    public static Map<Integer, QuestConfig> mainQuestResources() {
+        return mainQuestConfigMap;
     }
 }

@@ -27,6 +27,8 @@ public class QuestResource implements QuestConfig {
      */
     private String questName;
 
+    private Award award;
+
     private QuestCondition questCondition;
     private QuestAction questAction;
 
