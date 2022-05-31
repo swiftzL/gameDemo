@@ -6,7 +6,6 @@ import com.zl.server.play.bag.context.PropsContext;
 import com.zl.server.play.bag.item.Item;
 import com.zl.server.play.bag.model.Bag;
 import com.zl.server.play.bag.model.BagBox;
-import com.zl.server.play.bag.packet.MS_Props;
 import com.zl.server.play.bag.resource.Props;
 import com.zl.server.play.base.model.Account;
 import com.zl.server.play.base.model.AttrStorage;
@@ -15,9 +14,9 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 @Component
-public class PlayerContext {
+public class PlayerServiceContext {
 
-    public static PlayerContext INSTANCE;
+    public static PlayerServiceContext INSTANCE;
 
     @Storage
     private EntityCache<Integer, Account> accountEntityCache;
@@ -26,7 +25,7 @@ public class PlayerContext {
 
     @PostConstruct
     public void init() {
-        PlayerContext.INSTANCE = this;
+        PlayerServiceContext.INSTANCE = this;
     }
 
     public void addLevel(Integer playerId, int num) {

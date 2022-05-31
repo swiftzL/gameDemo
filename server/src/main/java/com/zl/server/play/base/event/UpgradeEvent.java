@@ -1,9 +1,8 @@
 package com.zl.server.play.base.event;
 
-import com.zl.server.play.player.OperationType;
+import com.zl.server.play.base.commons.OperationType;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.context.ApplicationEvent;
 
 @Setter
 @Getter

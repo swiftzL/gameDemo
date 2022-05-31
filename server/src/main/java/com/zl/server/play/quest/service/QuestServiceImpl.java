@@ -5,9 +5,8 @@ import com.zl.server.cache.anno.Storage;
 import com.zl.server.commons.Constants;
 import com.zl.server.netty.utils.NetMessageUtil;
 import com.zl.server.play.bag.model.Bag;
-import com.zl.server.play.player.PlayerContext;
+import com.zl.server.play.player.PlayerServiceContext;
 import com.zl.server.play.quest.config.AwardManager;
-import com.zl.server.play.quest.config.QuestManager;
 import com.zl.server.play.quest.config.QuestResourceConfig;
 import com.zl.server.play.quest.event.QuestEvent;
 import com.zl.server.play.quest.model.Quest;
@@ -79,7 +78,7 @@ public class QuestServiceImpl implements QuestService {
         Quest quest = questEntityCache.loadOrCreate(playerId);
         QuestBox questBox = quest.getModel();
         List<QuestStorage> questStorages = questBox.getQuestStorages();
-        if (PlayerContext.INSTANCE.bagIsFull(playerId)) {
+        if (PlayerServiceContext.INSTANCE.bagIsFull(playerId)) {
             NetMessageUtil.sendMessage(playerId, new MR_Response("背包容量满了"));
             return;
         }
@@ -94,7 +93,7 @@ public class QuestServiceImpl implements QuestService {
                 questEntityCache.writeBack(quest);
                 //添加背包
                 Award award = AwardManager.awardMap.get(req.getQuestId());
-                if (PlayerContext.INSTANCE.addProps(playerId, award.getModeId(), award.getNum())) {
+                if (PlayerServiceContext.INSTANCE.addProps(playerId, award.getModeId(), award.getNum())) {
                     NetMessageUtil.sendMessage(playerId, new MR_Response("领取奖励成功"));
                 } else {
                     NetMessageUtil.sendMessage(playerId, new MR_Response("领取奖励失败-背包容量不够"));

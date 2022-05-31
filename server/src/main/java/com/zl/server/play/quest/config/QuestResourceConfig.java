@@ -1,6 +1,6 @@
 package com.zl.server.play.quest.config;
 
-import com.zl.server.play.player.OperationType;
+import com.zl.server.play.base.commons.OperationType;
 import com.zl.server.play.quest.action.LevelUpQuestAction;
 import com.zl.server.play.quest.action.LoginQuestAction;
 import com.zl.server.play.quest.action.QuestAction;

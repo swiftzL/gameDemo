@@ -10,7 +10,7 @@ import com.zl.server.play.equip.packet.MR_RemoveEquipment;
 import com.zl.server.play.equip.packet.MR_UseEquipment;
 import com.zl.server.play.equip.packet.MS_Equipment;
 import com.zl.server.play.base.packet.MR_Response;
-import com.zl.server.play.player.PlayerContext;
+import com.zl.server.play.player.PlayerServiceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ public class EquipServiceImpl implements EquipService {
     private EntityCache<Integer, Bag> bagEntityCache;
 
     @Autowired
-    private PlayerContext playerContext;
+    private PlayerServiceContext playerContext;
 
     @Autowired
     private PropsContext propsContext;

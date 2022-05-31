@@ -1,4 +1,4 @@
-package com.zl.server.play.player;
+package com.zl.server.play.base.commons;
 
 public enum OperationType {
     Login(1),

@@ -1,14 +1,9 @@
 package com.zl.server.play.quest.condition;
 
-import com.zl.server.cache.EntityCache;
-import com.zl.server.cache.anno.Storage;
-import com.zl.server.play.base.model.Account;
-import com.zl.server.play.player.PlayerContext;
-import com.zl.server.play.quest.model.Quest;
+import com.zl.server.play.player.PlayerServiceContext;
 import com.zl.server.play.quest.model.QuestStorage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.stereotype.Component;
 
 
 @Getter
@@ -19,7 +14,7 @@ public class LevelUpQuestCondition implements QuestCondition {
 
     @Override
     public boolean verify(Integer playerId, QuestStorage questStorage, Object resource) {
-        Integer currentLevel = PlayerContext.INSTANCE.getLevel(playerId);
+        Integer currentLevel = PlayerServiceContext.INSTANCE.getLevel(playerId);
         return currentLevel == leve;
     }
 
@@ -30,7 +25,7 @@ public class LevelUpQuestCondition implements QuestCondition {
 
     @Override
     public int getCurrent(Integer playerId) {
-        return PlayerContext.INSTANCE.getLevel(playerId);
+        return PlayerServiceContext.INSTANCE.getLevel(playerId);
     }
 
     @Override
