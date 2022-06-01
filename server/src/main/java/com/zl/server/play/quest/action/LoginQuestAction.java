@@ -9,7 +9,6 @@ public class LoginQuestAction implements QuestAction {
 
     @Override
     public void action(QuestStorage questStorage) {
-        questStorage.setCurrent(questStorage.getCurrent() + 1);
         if (questStorage.getCurrent() >= questStorage.getMaxCount()) {
             log.info("登录任务完成");
             questStorage.setTaskStatus(QuestConstants.YES);

@@ -5,6 +5,7 @@ import com.zl.server.cache.anno.Storage;
 import com.zl.server.netty.utils.NetMessageUtil;
 import com.zl.server.play.bag.model.Bag;
 import com.zl.server.GameContext;
+import com.zl.server.play.bag.service.BagService;
 import com.zl.server.play.player.service.PlayerService;
 import com.zl.server.play.quest.commons.QuestConstants;
 import com.zl.server.play.quest.context.QuestResourceContext;
@@ -35,6 +36,7 @@ public class QuestServiceImpl implements QuestService {
     private EntityCache<Integer, Quest> questEntityCache;
     @Storage
     private EntityCache<Integer, Bag> bagEntityCache;
+
     private Map<Integer, QuestProcessor> questProcessorMap;
     private Map<Integer, QuestResource> questConfigMap = QuestResourceContext.allQuestConfigMap;
 
@@ -76,14 +78,15 @@ public class QuestServiceImpl implements QuestService {
 
     //领取
     @Override
-    public void drawAward(Integer playerId, MS_Quest req) throws Exception {
+    public void drawAward(Integer playerId, MS_Quest req) {
         Quest quest = questEntityCache.loadOrCreate(playerId);
         QuestBox questBox = quest.getModel();
         List<QuestStorage> questStorages = questBox.getQuestStorages();
-        PlayerService playerService = GameContext.getPlayerService();
+
+        BagService bagService = GameContext.getBagService();
 
         //背包是否是否满了
-        if (playerService.bagIsFull(playerId)) {
+        if (bagService.bagIsFull(playerId)) {
             NetMessageUtil.sendMessage(playerId, new MR_Response("背包容量满了"));
             return;
         }
@@ -99,11 +102,12 @@ public class QuestServiceImpl implements QuestService {
                 //获取奖励
                 Award award = questConfigMap.get(questStorage.getTaskId()).getAward();
                 //添加背包
-                if (playerService.addProps(playerId, award.getModeId(), award.getNum())) {
+                if (bagService.addProps(playerId, award.getModeId(), award.getNum())) {
                     NetMessageUtil.sendMessage(playerId, new MR_Response("领取奖励成功"));
                 } else {
                     NetMessageUtil.sendMessage(playerId, new MR_Response("领取奖励失败-背包容量不够"));
                 }
+                return;
             }
         }
         NetMessageUtil.sendMessage(playerId, new MR_Response("当前任务不存在"));
@@ -112,17 +116,45 @@ public class QuestServiceImpl implements QuestService {
     //接受任务
     @Override
     public void acceptQuest(Integer playerId, MS_Quest req) {
+        if (null == questConfigMap.get(req.getQuestId())) {
+            NetMessageUtil.sendMessage(playerId, new MR_Response("任务不存在"));
+            return;
+        }
         Quest quest = questEntityCache.loadOrCreate(playerId);
         List<QuestStorage> questStorages = quest.getModel().getQuestStorages();
         if (existQuest(req.getQuestId(), questStorages)) {
             NetMessageUtil.sendMessage(playerId, new MR_Response("当前任务已存在"));
             return;
         }
-
         QuestStorage questStorage = createQuestStorage(playerId, req.getQuestId());
         questStorages.add(questStorage);
         questEntityCache.writeBack(quest);
         NetMessageUtil.sendMessage(playerId, new MR_Response("领取任务成功"));
+    }
+
+    @Override
+    public void updateProgress(Integer playerId, int questId, int progress) {
+        Quest quest = questEntityCache.loadOrCreate(playerId);
+        QuestBox model = quest.getModel();
+        List<QuestStorage> questStorages = model.getQuestStorages();
+        QuestStorage questStorage = getQuestStorage(questStorages, questId);
+        if (questStorage != null) {
+            questStorage.setCurrent(questStorage.getCurrent() + progress);
+            questEntityCache.writeBack(quest);
+        }
+
+    }
+
+    private QuestStorage getQuestStorage(List<QuestStorage> questStorages, int questId) {
+        if (questStorages == null) {
+            return null;
+        }
+        for (QuestStorage questStorage : questStorages) {
+            if (questStorage.getTaskId().equals(questId)) {
+                return questStorage;
+            }
+        }
+        return null;
     }
 
     //获取任务

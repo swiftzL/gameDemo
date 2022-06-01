@@ -14,4 +14,6 @@ public interface QuestService {
     void drawAward(Integer playerId, MS_Quest req) throws Exception;
 
     void acceptQuest(Integer playerId, MS_Quest req);
+
+    void updateProgress(Integer playerId, int questId, int num);
 }

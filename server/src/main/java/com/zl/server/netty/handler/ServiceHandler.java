@@ -36,6 +36,10 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
         Integer id = netConnection.getAttr("id", Integer.class);
         Request request = (Request) msg;
         Invoke invoke = invokes.get(request.getCommand());
+        //拦截
+        if (!intercept.preHandle(netConnection, request)) {
+            return;
+        }
         if (id == null) {
             exec(netConnection, invoke, request);
         } else {
@@ -45,10 +49,7 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
                         netConnection.sendMessage(new MR_Response("指令错误"));
                         return;
                     }
-                    //拦截
-                    if (!intercept.preHandle(netConnection, request)) {
-                        return;
-                    }
+
                     exec(netConnection, invoke, request);
                 } catch (Exception exception) {
                     log.error("exec exception " + exception);

@@ -20,7 +20,7 @@ public class EquipFacade {
     }
 
     @NetMessageInvoke(Command.RemoveEquipment)
-    public void removeEquipment(@Param("id") Integer playerId, MS_Equipment req) throws Exception {
-        equipService.removeEquipment(playerId, req);
+    public void unUseEquipment(@Param("id") Integer playerId, MS_Equipment req) throws Exception {
+        equipService.unUseEquipment(playerId, req);
     }
 }

@@ -1,6 +1,8 @@
 package com.zl.server.play.quest.condition;
 
+import com.zl.server.GameContext;
 import com.zl.server.play.quest.model.QuestStorage;
+import com.zl.server.play.quest.service.QuestService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,7 +15,7 @@ public class LoginQuestCondition implements QuestCondition {
 
     @Override
     public boolean verify(Integer playerId, QuestStorage questStorage, Object resource) {
-        return true;
+        return questStorage.getCurrent() >= questStorage.getMaxCount();
     }
 
     @Override
@@ -30,4 +32,11 @@ public class LoginQuestCondition implements QuestCondition {
     public int getMaxCount() {
         return this.count;
     }
+
+    @Override
+    public void updateProgress(Integer playerId, int questId) {
+        QuestService questService = GameContext.getQuestService();
+        questService.updateProgress(playerId, questId, 1);
+    }
+
 }

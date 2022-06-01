@@ -50,6 +50,10 @@ public class Client {
         while (scanner.hasNext()) {
             int code = scanner.nextInt();
             scanner.nextLine();
+            if(code==13){
+                printFunction();
+                continue;
+            }
             functions.get(code-1).run();
             if (code == 100) {
                 return;

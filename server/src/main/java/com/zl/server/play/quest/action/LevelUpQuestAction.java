@@ -10,7 +10,6 @@ public class LevelUpQuestAction implements QuestAction {
     @Override
     public void action(QuestStorage questStorage) {
         questStorage.setTaskStatus(QuestConstants.YES);
-        questStorage.setCurrent(questStorage.getCurrent() + 1);
         log.info("等级升级任务完成");
     }
 }

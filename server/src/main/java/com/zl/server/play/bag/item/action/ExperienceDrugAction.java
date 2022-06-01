@@ -21,8 +21,6 @@ public class ExperienceDrugAction implements ItemAction {
     @Storage
     private EntityCache<Integer, Account> entityCache;
 
-    @Autowired
-    private GameContext playerContext;
 
     @Autowired
     private ApplicationContext applicationContext;

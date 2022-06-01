@@ -7,6 +7,8 @@ import com.zl.server.play.bag.context.PropsContext;
 import com.zl.server.play.bag.item.Item;
 import com.zl.server.play.bag.item.ItemType;
 import com.zl.server.play.bag.resource.param.AttackParam;
+import com.zl.server.play.bag.service.BagService;
+import com.zl.server.play.base.packet.MR_Response;
 import com.zl.server.play.equip.packet.MR_Attack;
 import com.zl.server.play.base.model.Account;
 import com.zl.server.play.base.model.EquipmentStorage;
@@ -21,22 +23,27 @@ public class AttackEquipmentAction implements ItemAction {
     @Storage
     private EntityCache<Integer, Account> entityCache;
 
-    @Autowired
-    private GameContext playerContext;
-
     @Override
     public void action(int modelId, Integer playerId, int num, Item item) {
         AttackParam itemParam = PropsContext.getItemParam(modelId, AttackParam.class);
-
-        int attack = itemParam.getAttack() * num;
         PlayerService playerService = GameContext.getPlayerService();
+        Account account = entityCache.load(playerId);
+        EquipmentStorage equipmentStorage = account.getModel().getEquipmentStorage();
+        if (equipmentStorage.getWeapon() == null && num == -1) {
+            NetMessageUtil.sendMessage(playerId, new MR_Response("当前装备不存在"));
+            return;
+        }
+        int attack = itemParam.getAttack() * num;
         playerService.addAttack(playerId, attack);
 
         MR_Attack mr_attack = new MR_Attack();
+
         mr_attack.setAttack(attack);
 
-        Account account = entityCache.load(playerId);
-        EquipmentStorage equipmentStorage = account.getModel().getEquipmentStorage();
+        if (item != null && equipmentStorage.getWeapon() != null) {
+            BagService bagService = GameContext.getBagService();
+            bagService.addProps(playerId, item.getModelId(), 1);
+        }
         equipmentStorage.setWeapon(item);
 
         entityCache.writeBack(account);

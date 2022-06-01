@@ -36,6 +36,7 @@ public class MainQuestProcessor implements QuestProcessor {
     public void finish(Integer playerId, int questId, Quest quest, QuestStorage questStorage, Object resource) {
         QuestConfig questConfig = questResourceMap.get(questId);
         QuestCondition finishCondition = questConfig.getFinishCondition();
+        finishCondition.updateProgress(playerId, questId);
         if (finishCondition.verify(playerId, questStorage, resource)) {
             QuestAction questAction = questConfig.getQuestAction();
             questAction.action(questStorage);

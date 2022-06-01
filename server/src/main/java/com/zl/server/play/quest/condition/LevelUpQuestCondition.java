@@ -3,6 +3,7 @@ package com.zl.server.play.quest.condition;
 import com.zl.server.GameContext;
 import com.zl.server.play.player.service.PlayerService;
 import com.zl.server.play.quest.model.QuestStorage;
+import com.zl.server.play.quest.service.QuestService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -17,7 +18,7 @@ public class LevelUpQuestCondition implements QuestCondition {
     public boolean verify(Integer playerId, QuestStorage questStorage, Object resource) {
         PlayerService playerService = GameContext.getPlayerService();
         Integer currentLevel = playerService.getLevel(playerId);
-        return currentLevel == leve;
+        return currentLevel >= leve;
     }
 
     @Override
@@ -34,5 +35,11 @@ public class LevelUpQuestCondition implements QuestCondition {
     @Override
     public int getMaxCount() {
         return this.leve;
+    }
+
+    @Override
+    public void updateProgress(Integer playerId, int questId) {
+        QuestService questService = GameContext.getQuestService();
+        questService.updateProgress(playerId, questId, 1);
     }
 }

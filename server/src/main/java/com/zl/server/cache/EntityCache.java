@@ -41,7 +41,6 @@ public class EntityCache<PK, T> implements Cache<PK, T> {
             public void write(PK pk, T t) {
                 persist.put(t);
             }
-
             @Override
             public void delete(PK pk, T t, RemovalCause removalCause) {
                 return;

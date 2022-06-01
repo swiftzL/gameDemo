@@ -37,6 +37,5 @@ public class ResponseDecoder extends ByteToMessageDecoder {
         response.setStatusCode(statusCode);
         response.setContent(bytes);
         out.add(response);
-        System.out.println(response);
     }
 }

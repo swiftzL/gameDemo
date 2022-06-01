@@ -22,6 +22,7 @@ public class SimplePersist implements Persist {
     @Autowired
     private EntityManagerContext entityManagerContext;
 
+    @Autowired
     private CacheConfig cacheConfig;
 
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);

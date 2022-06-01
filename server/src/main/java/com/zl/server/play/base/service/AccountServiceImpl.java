@@ -34,6 +34,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = accountDao.findAccountByUsernameAndPassword(req.getUsername(), req.getPassword());
         if (account == null) {
             netConnection.sendMessage(new MR_Response("登录失败"));
+            return;
         }
         netConnection.setAttr("id", account.getId());
 
@@ -54,6 +55,7 @@ public class AccountServiceImpl implements AccountService {
         AttrStorage attrStorage = account.getModel().getAttrStorage();
         accountVo.setAttack(attrStorage.getAttack());
         accountVo.setDefense(attrStorage.getDefense());
+
         EquipmentStorage equipmentStorage = account.getModel().getEquipmentStorage();
         accountVo.setCloth(equipmentStorage.getCloth());
         accountVo.setShoe(equipmentStorage.getShoe());

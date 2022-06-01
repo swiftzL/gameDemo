@@ -9,5 +9,4 @@ gamedemo:
     host: 127.0.0.1
     port: 8088
   cache:
-    persist:
-      num: 5
+    persistNum: 5

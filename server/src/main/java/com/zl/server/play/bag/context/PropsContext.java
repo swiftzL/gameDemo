@@ -47,7 +47,22 @@ public class PropsContext {
     }
 
 
-    public static Item createItem(int id, int count) {
+    public static Item[] createItems(int id, int num) {
+        Props props = getProps(id);
+        int count = props.getCount();
+        int itemNum = num / count + (num % count == 0 ? 0 : 1);
+        int remain = num % count;
+        Item[] items = new Item[itemNum];
+        for (int i = 0; i < itemNum; i++) {
+            items[i] = createItem(id, count);
+        }
+        if (remain != 0) {
+            items[itemNum - 1].setCount(remain);
+        }
+        return items;
+    }
+
+    private static Item createItem(int id, int count) {
         Class<? extends Item> aClass = itemMap.get(id);
         Item item;
         try {
