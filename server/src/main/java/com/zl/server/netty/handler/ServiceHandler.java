@@ -1,6 +1,8 @@
 package com.zl.server.netty.handler;
 
 import com.zl.common.message.NetMessage;
+import com.zl.common.message.SceneNetMessage;
+import com.zl.server.commons.Constants;
 import com.zl.server.netty.anno.Param;
 import com.zl.server.netty.intercept.Intercept;
 import com.zl.server.netty.intercept.LoginIntercept;
@@ -19,43 +21,59 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.Attribute;
 import lombok.extern.slf4j.Slf4j;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 import java.util.Map;
 
 @Slf4j
 public class ServiceHandler extends ChannelInboundHandlerAdapter {
 
-    private Map<Integer, Invoke> invokes = NetMessageProcessor.invokes;
-    private TaskExecutor executor = DispatchExecutor.ExecutorHolder.INSTANCE;
-    private Intercept intercept = Intercept.loginIntercept;
+
+    private static TaskExecutor playerExecutor = DispatchExecutor.getExecutor(4, Constants.PlyerThreadName);
+    private static TaskExecutor sceneExecutor = DispatchExecutor.getExecutor(4, Constants.SceneThreadName);
+    private static Map<Integer, Invoke> invokes = NetMessageProcessor.invokes;
+    private static Intercept intercept = Intercept.loginIntercept;
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) {
         NetConnection netConnection = getConnection(ctx.channel());
-        Integer id = netConnection.getAttr("id", Integer.class);
         Request request = (Request) msg;
         Invoke invoke = invokes.get(request.getCommand());
+        if (invoke == null) {
+            netConnection.sendMessage(new MR_Response("指令错误"));
+            return;
+        }
+
         //拦截
         if (!intercept.preHandle(netConnection, request)) {
             return;
         }
+        Integer id = getTaskId(request.getContent(), netConnection);
         if (id == null) {
             exec(netConnection, invoke, request);
         } else {
-            executor.execute(new Task(id, () -> {
+            TaskExecutor taskExecutor = selectExecutor(request.getContent());
+            taskExecutor.execute(new Task(id, () -> {
                 try {
-                    if (invoke == null) {
-                        netConnection.sendMessage(new MR_Response("指令错误"));
-                        return;
-                    }
-
                     exec(netConnection, invoke, request);
                 } catch (Exception exception) {
                     log.error("exec exception " + exception);
                 }
             }));
         }
+    }
+
+    private TaskExecutor selectExecutor(Object object) {
+        if (object.getClass().isAssignableFrom(SceneNetMessage.class)) {
+            return sceneExecutor;
+        }
+        return playerExecutor;
+    }
+
+    private Integer getTaskId(Object object, NetConnection netConnection) {
+        if (object.getClass().isAssignableFrom(SceneNetMessage.class)) {
+            return netConnection.getSceneId();
+        }
+        return netConnection.getPlayerId();
     }
 
     //执行业务

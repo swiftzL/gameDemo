@@ -13,6 +13,7 @@ public class NetConnection {
     private Map<String, Object> attrs = new ConcurrentHashMap<>();
     private static Integer notificationId = -1;
     public static AttributeKey<NetConnection> netConnection = AttributeKey.valueOf("netConnection");
+    private static String SCENE_ID = "scene_id";
 
     public NetConnection(Channel channel) {
         this.channel = channel;
@@ -23,6 +24,18 @@ public class NetConnection {
         response.setContent(message);
         response.setRequestId(notificationId);
         this.channel.writeAndFlush(response);
+    }
+
+    public Integer getPlayerId() {
+        return this.getAttr("id", Integer.class);
+    }
+
+    public Integer getSceneId() {
+        return this.getAttr(SCENE_ID, Integer.class);
+    }
+
+    public void setSceneId(Integer sceneId) {
+        this.setAttr(SCENE_ID, sceneId);
     }
 
     public void sendMessage(Response response) {

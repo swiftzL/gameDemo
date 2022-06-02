@@ -14,18 +14,18 @@ public class DispatchExecutor implements TaskExecutor {
     private int threadSize;
     private Chooser chooser;
 
-    public static class ExecutorHolder {
-        public static TaskExecutor INSTANCE = new DispatchExecutor(4);
+    public static TaskExecutor getExecutor(int threadSize, String threadPre) {
+        return new DispatchExecutor(threadSize, new DefaultThreadFactory(threadPre));
     }
 
-    public DispatchExecutor(int threadSize) {
+    public DispatchExecutor(int threadSize, ThreadFactory threadFactory) {
         this.threadSize = threadSize;
         this.chooser = newChooser(threadSize);
         this.works = new Executor[threadSize];
-        startThread();
+        startThread(threadFactory);
     }
 
-    private void startThread() {
+    private void startThread(ThreadFactory threadFactory) {
         for (int i = 0; i < this.threadSize; i++) {
             Executor executor = new ThreadPoolExecutor(1, 1,
                     0L, TimeUnit.MILLISECONDS,

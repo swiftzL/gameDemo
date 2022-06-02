@@ -41,4 +41,5 @@ public class PlayerServiceImpl implements PlayerService {
         Account account = accountEntityCache.load(playerId);
         return account;
     }
+
 }

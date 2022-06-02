@@ -8,4 +8,5 @@ import lombok.Setter;
 public class AttrStorage {
     private int attack;
     private int defense;
+    private int hp;
 }

@@ -75,7 +75,6 @@ public class QuestServiceImpl implements QuestService {
     }
 
     //校验背包
-
     //领取
     @Override
     public void drawAward(Integer playerId, MS_Quest req) {
@@ -142,7 +141,6 @@ public class QuestServiceImpl implements QuestService {
             questStorage.setCurrent(questStorage.getCurrent() + progress);
             questEntityCache.writeBack(quest);
         }
-
     }
 
     private QuestStorage getQuestStorage(List<QuestStorage> questStorages, int questId) {
