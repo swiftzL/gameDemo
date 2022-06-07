@@ -17,13 +17,18 @@ public class TaskServiceImpl implements TaskService {
     private static ScheduledExecutorService scheduleExecutor = ThreadPoolConfig.scheduleExecutor;
 
     public <T> void scheduleExecSceneTask(Task task, BiConsumer<? super T, ? super Throwable> action) {
+        scheduleExecSceneTask(task, action, 5);
+    }
+
+    public <T> void scheduleExecSceneTask(Task task, BiConsumer<? super T, ? super Throwable> action, int delay) {
         CompletableFuture future = new CompletableFuture();
         scheduleExecutor.schedule(() -> {
             if (!future.isCancelled() && !future.isDone()) {
-                future.complete(null);
+                future.completeExceptionally(new TimeoutException("超时异常"));
             }
-        }, 5, TimeUnit.SECONDS);
+        }, delay, TimeUnit.SECONDS);
         sceneExecutor.executeWithFuture(task, future);
         future.whenCompleteAsync(action, sceneExecutor.getExecutorById(task.getId()));
     }
+
 }
