@@ -47,6 +47,14 @@ public class NetConnection {
         this.attrs.remove(SCENE_ID);
     }
 
+    public void close(){
+        this.channel.close();
+    }
+
+    public void removePlayer() {
+        this.attrs.remove("id");
+    }
+
     public void sendMessage(Response response) {
         this.channel.writeAndFlush(response);
     }

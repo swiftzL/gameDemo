@@ -36,4 +36,9 @@ public class AccountFacade {
     public void upgrade(@Param("id") Integer playerId, NetConnection netConnection) {
         accountService.upgrade(playerId, netConnection);
     }
+
+    @NetMessageInvoke(Command.LOGOUT)
+    public void logout(@Param("id") Integer playerId, NetConnection netConnection) {
+        accountService.logout(playerId, netConnection);
+    }
 }

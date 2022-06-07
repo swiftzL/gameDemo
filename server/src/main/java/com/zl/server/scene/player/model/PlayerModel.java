@@ -1,4 +1,4 @@
-package com.zl.server.scene.model;
+package com.zl.server.scene.player.model;
 
 import com.zl.server.play.fight.model.Point;
 import lombok.Getter;
@@ -13,7 +13,6 @@ public class PlayerModel {
     private int hp;
     private int attack;
     private int defense;
-
 
     public boolean canAttack(Point point) {
         return this.point.equals(point);

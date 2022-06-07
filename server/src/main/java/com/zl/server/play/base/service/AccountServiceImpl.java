@@ -86,4 +86,11 @@ public class AccountServiceImpl implements AccountService {
         entityCache.writeBack(account);
         netConnection.sendMessage(new MR_Response("升级完成"));
     }
+
+    public void logout(Integer playerId, NetConnection netConnection) {
+        netConnection.removePlayer();
+        NetMessageUtil.removeConnection(playerId);
+        netConnection.sendMessage(new MR_Response("退出中"));
+        netConnection.close();
+    }
 }

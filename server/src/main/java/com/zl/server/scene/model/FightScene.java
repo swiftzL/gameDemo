@@ -1,10 +1,12 @@
-package com.zl.server.scene;
+package com.zl.server.scene.model;
 
 import com.zl.server.netty.utils.NetMessageUtil;
 import com.zl.server.play.fight.model.Point;
-import com.zl.server.scene.manager.PlayerManager;
-import com.zl.server.scene.manager.PlayerMapManager;
-import com.zl.server.scene.model.PlayerModel;
+import com.zl.server.scene.operate.FightOperate;
+import com.zl.server.scene.operate.SimpleFightOperate;
+import com.zl.server.scene.player.PlayerManager;
+import com.zl.server.scene.player.PlayerMapManager;
+import com.zl.server.scene.player.model.PlayerModel;
 
 
 public class FightScene extends AbstractScene {

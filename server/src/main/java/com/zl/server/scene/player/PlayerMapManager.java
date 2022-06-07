@@ -1,8 +1,8 @@
-package com.zl.server.scene.manager;
+package com.zl.server.scene.player;
 
 
 import com.zl.server.play.fight.model.Point;
-import com.zl.server.scene.model.PlayerModel;
+import com.zl.server.scene.player.model.PlayerModel;
 
 import java.util.Random;
 

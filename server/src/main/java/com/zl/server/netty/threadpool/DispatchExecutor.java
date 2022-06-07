@@ -48,6 +48,11 @@ public class DispatchExecutor implements TaskExecutor {
         }
     }
 
+    public Executor getExecutorById(int id) {
+        return works[this.chooser.next(id)];
+    }
+
+
     private static boolean isPowerOfTwo(int val) {
         return (val & -val) == val;
     }
@@ -59,4 +64,5 @@ public class DispatchExecutor implements TaskExecutor {
             return (id) -> id % threadSize;
         }
     }
+
 }

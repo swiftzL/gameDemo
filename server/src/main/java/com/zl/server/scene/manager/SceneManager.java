@@ -1,4 +1,6 @@
-package com.zl.server.scene;
+package com.zl.server.scene.manager;
+
+import com.zl.server.scene.model.Scene;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,15 +12,15 @@ public class SceneManager {
     private static Map<Integer, Scene> sceneMap = new ConcurrentHashMap<>();
     private static Map<Integer, Scene> playerToScene = new ConcurrentHashMap<>();
 
-    public static Scene putScene( Scene scene) {
+    public static Scene putScene(Scene scene) {
         Integer id = sceneId.incrementAndGet();
         scene.setSceneId(id);
         sceneMap.put(id, scene);
         return scene;
     }
 
-    public static void addPlayerToScene(Integer playerId,Scene scene){
-        playerToScene.put(playerId,scene);
+    public static void addPlayerToScene(Integer playerId, Scene scene) {
+        playerToScene.put(playerId, scene);
     }
 
     public static void quitScene(Integer playerId) {
@@ -32,7 +34,11 @@ public class SceneManager {
         return sceneMap.get(sceneId);
     }
 
-    public static Scene getSceneByPlayer(Integer playerId){
+    public static Scene getSceneByPlayer(Integer playerId) {
         return playerToScene.get(playerId);
+    }
+
+    public static void quit(Integer playerId) {
+        playerToScene.remove(playerId);
     }
 }

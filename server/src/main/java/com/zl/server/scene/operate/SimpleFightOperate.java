@@ -1,7 +1,8 @@
-package com.zl.server.scene;
+package com.zl.server.scene.operate;
 
 import com.zl.server.netty.utils.NetMessageUtil;
-import com.zl.server.scene.model.PlayerModel;
+import com.zl.server.scene.operate.FightOperate;
+import com.zl.server.scene.player.model.PlayerModel;
 
 public class SimpleFightOperate implements FightOperate {
     @Override

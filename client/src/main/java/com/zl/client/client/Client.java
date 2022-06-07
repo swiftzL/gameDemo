@@ -26,14 +26,14 @@ public class Client {
     private Channel channel;
 
     @Autowired
-    private List<Function>  functions;
+    private List<Function> functions;
 
     @Autowired
     private Scanner scanner;
 
     @PostConstruct
-    public void init(){
-        this.functions.sort((e1,e2)->e1.getCode()-e2.getCode());
+    public void init() {
+        this.functions.sort((e1, e2) -> e1.getCode() - e2.getCode());
     }
 
     public void printFunction() {
@@ -50,11 +50,14 @@ public class Client {
         while (scanner.hasNext()) {
             int code = scanner.nextInt();
             scanner.nextLine();
-            if(code==18){
+            if (code == 19) {
                 printFunction();
                 continue;
             }
-            functions.get(code-1).run();
+            functions.get(code - 1).run();
+            if (code == 18) {
+                return;
+            }
             if (code == 100) {
                 return;
             }

@@ -17,7 +17,8 @@ public enum Command {
     JoinScene(14, "加入场景"),
     QuitScene(15, "退出场景"),
     MovePoint(16, "移动坐标"),
-    Attack(17, "攻击目标");
+    Attack(17, "攻击目标"),
+    LOGOUT(18, "退出");
 
     private int code;
     private String desc;

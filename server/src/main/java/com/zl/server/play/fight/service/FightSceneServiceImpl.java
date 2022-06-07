@@ -2,9 +2,6 @@ package com.zl.server.play.fight.service;
 
 import com.zl.server.cache.EntityCache;
 import com.zl.server.cache.anno.Storage;
-import com.zl.server.commons.Command;
-import com.zl.server.commons.Constants;
-import com.zl.server.netty.anno.NetMessageInvoke;
 import com.zl.server.netty.connection.NetConnection;
 import com.zl.server.netty.threadpool.Task;
 import com.zl.server.play.base.model.Account;
@@ -13,17 +10,16 @@ import com.zl.server.play.base.model.AttrStorage;
 import com.zl.server.play.base.packet.MR_Response;
 import com.zl.server.play.fight.model.Point;
 import com.zl.server.play.fight.packet.*;
-import com.zl.server.scene.FightScene;
-import com.zl.server.scene.Scene;
-import com.zl.server.scene.SceneManager;
-import com.zl.server.scene.model.PlayerModel;
+import com.zl.server.scene.model.FightScene;
+import com.zl.server.scene.model.Scene;
+import com.zl.server.scene.manager.SceneManager;
+import com.zl.server.scene.player.model.PlayerModel;
 import com.zl.server.task.service.TaskService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 @Service
 @Slf4j
@@ -52,24 +48,29 @@ public class FightSceneServiceImpl implements FightSceneService {
             return;
         }
         //加入场景
-        Boolean joining = netConnection.getAttr("joining", Boolean.class);
-        if (joining != null && joining) {
+        Account account = accountEntityCache.loadOrCreate(playerId);
+        AccountBox model = account.getModel();
+
+        if (model.isJoining()) {
             netConnection.sendMessage(new MR_Response("当前有场景正在加入中"));
             return;
         }
-        netConnection.setAttr("scene_joining", true);
+
+        model.setJoining(true);
         //加入场景
         Task task = new Task(req.getSceneId(), () -> {
             joinFightScene(playerId, req.getSceneId());
         });
-        CompletableFuture future = taskService.execSceneTask(task);
-        future.whenCompleteAsync((resutl, err) -> {
+        taskService.scheduleExecSceneTask(task, (result, err) -> {
             if (err != null) {
                 log.error("err {}", err);
+                quitScene(playerId, netConnection);
+            } else {
+                netConnection.setSceneId(req.getSceneId());
             }
-            netConnection.setSceneId(req.getSceneId());
-            netConnection.setAttr("scene_joining", false);
+            model.setJoining(false);
         });
+
     }
 
     public void joinFightScene(Integer playerId, Integer sceneId) {

@@ -6,14 +6,11 @@ import com.zl.server.netty.anno.NetMessageHandler;
 import com.zl.server.netty.anno.NetMessageInvoke;
 import com.zl.server.netty.anno.Param;
 import com.zl.server.netty.connection.NetConnection;
-import com.zl.server.play.base.packet.MR_Response;
 import com.zl.server.play.fight.packet.MS_Attack;
 import com.zl.server.play.fight.packet.MS_CreateFightScene;
 import com.zl.server.play.fight.packet.MS_JoinFightScene;
 import com.zl.server.play.fight.packet.MS_MovePoint;
 import com.zl.server.play.fight.service.FightSceneService;
-import com.zl.server.scene.Scene;
-import com.zl.server.scene.SceneManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @NetMessageHandler

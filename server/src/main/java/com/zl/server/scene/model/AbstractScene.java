@@ -1,21 +1,12 @@
-package com.zl.server.scene;
+package com.zl.server.scene.model;
 
-import com.zl.server.GameContext;
-import com.zl.server.netty.connection.NetConnection;
 import com.zl.server.netty.utils.NetMessageUtil;
-import com.zl.server.play.base.model.Account;
-import com.zl.server.play.base.model.AccountBox;
-import com.zl.server.play.base.model.AttrStorage;
 import com.zl.server.play.base.packet.MR_Response;
-import com.zl.server.play.fight.model.Point;
-import com.zl.server.scene.manager.PlayerManager;
-import com.zl.server.scene.manager.PlayerMapManager;
-import com.zl.server.scene.model.PlayerModel;
-import com.zl.server.play.player.service.PlayerService;
+import com.zl.server.scene.player.PlayerManager;
+import com.zl.server.scene.player.PlayerMapManager;
+import com.zl.server.scene.player.model.PlayerModel;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.concurrent.CompletableFuture;
 
 
 @Getter

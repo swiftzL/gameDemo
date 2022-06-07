@@ -9,10 +9,11 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.function.BiConsumer;
 
 public interface TaskService {
 
-    CompletableFuture execSceneTask(Task task);
+    <T> void scheduleExecSceneTask(Task task, BiConsumer<? super T, ? super Throwable> action);
 
 
 }

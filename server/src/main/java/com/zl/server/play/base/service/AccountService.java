@@ -15,4 +15,6 @@ public interface AccountService {
     void createAccount(MS_Account ms_account, NetConnection netConnection);
 
     void upgrade(Integer playerId, NetConnection netConnection);
+
+    void logout(Integer playerId,NetConnection netConnection);
 }

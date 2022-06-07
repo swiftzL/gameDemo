@@ -26,6 +26,10 @@ public class NetMessageUtil {
         netConnectionMap.putIfAbsent(playerId, netConnection);
     }
 
+    public static void removeConnection(Integer playerId) {
+        netConnectionMap.remove(playerId);
+    }
+
     public static void sendMessage(Integer playerId, String message) {
         sendMessage(playerId, new MR_Response(message));
     }

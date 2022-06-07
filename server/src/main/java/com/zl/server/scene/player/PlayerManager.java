@@ -1,14 +1,14 @@
-package com.zl.server.scene.manager;
+package com.zl.server.scene.player;
 
 
-import com.zl.server.scene.model.PlayerModel;
+import com.zl.server.scene.player.model.PlayerModel;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerManager {
-    private int current;
-    private int maxCount;
+    private volatile int current;
+    private volatile int maxCount;
 
     private Map<Integer, PlayerModel> playerModelMap = new HashMap<>();
 
