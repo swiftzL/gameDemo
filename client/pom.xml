@@ -11,6 +11,7 @@
     <artifactId>client</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>client</name>
+<!--    <packaging>jar</packaging>-->
     <description>client</description>
     <properties>
         <java.version>1.8</java.version>

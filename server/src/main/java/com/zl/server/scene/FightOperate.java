@@ -1,6 +1,6 @@
-package com.zl.server.play.fight.scene;
+package com.zl.server.scene;
 
-import com.zl.server.play.fight.player.PlayerModel;
+import com.zl.server.scene.model.PlayerModel;
 
 public interface FightOperate {
     void pk(PlayerModel playerModel1, PlayerModel playerModel2);

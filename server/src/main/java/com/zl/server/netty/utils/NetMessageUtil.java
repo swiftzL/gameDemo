@@ -19,6 +19,10 @@ public class NetMessageUtil {
     }
 
     public static void addConnection(Integer playerId, NetConnection netConnection) {
+        NetConnection netConnectionOld = netConnectionMap.get(playerId);
+        if (netConnectionOld != null) {
+            netConnection.copy(netConnectionOld);
+        }
         netConnectionMap.putIfAbsent(playerId, netConnection);
     }
 

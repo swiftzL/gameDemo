@@ -10,13 +10,18 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class NetConnection {
     private volatile Channel channel;
-    private Map<String, Object> attrs = new ConcurrentHashMap<>();
+    private Map<String, Object> attrs;
     private static Integer notificationId = -1;
     public static AttributeKey<NetConnection> netConnection = AttributeKey.valueOf("netConnection");
     private static String SCENE_ID = "scene_id";
 
     public NetConnection(Channel channel) {
         this.channel = channel;
+        init();
+    }
+
+    public void init() {
+        this.attrs = new ConcurrentHashMap<>();
     }
 
     public void sendMessage(NetMessage message) {
@@ -38,12 +43,20 @@ public class NetConnection {
         this.setAttr(SCENE_ID, sceneId);
     }
 
+    public void removeScene() {
+        this.attrs.remove(SCENE_ID);
+    }
+
     public void sendMessage(Response response) {
         this.channel.writeAndFlush(response);
     }
 
     public <T> T getAttr(String key, Class<T> clazz) {
-        return (T) attrs.get(key);
+        Object o = attrs.get(key);
+        if (o == null) {
+            return null;
+        }
+        return (T) o;
     }
 
     public boolean hashAttr(String key) {
@@ -56,5 +69,13 @@ public class NetConnection {
 
     public void setAttr(String key, Object value) {
         attrs.put(key, value);
+    }
+
+    public Map<String, Object> getAttrs() {
+        return attrs;
+    }
+
+    public void copy(NetConnection netConnection) {
+        this.attrs = netConnection.getAttrs();
     }
 }

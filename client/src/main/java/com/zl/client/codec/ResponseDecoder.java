@@ -22,6 +22,7 @@ public class ResponseDecoder extends ByteToMessageDecoder {
         if(Constants.FLAG!=in.readInt()){
             ctx.channel().close();
             log.error("错误请求");
+            return;
         }
         int requestId = in.readInt();
         int statusCode = in.readInt();

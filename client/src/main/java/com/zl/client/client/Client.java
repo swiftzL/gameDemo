@@ -50,7 +50,7 @@ public class Client {
         while (scanner.hasNext()) {
             int code = scanner.nextInt();
             scanner.nextLine();
-            if(code==13){
+            if(code==18){
                 printFunction();
                 continue;
             }

@@ -3,6 +3,8 @@ package com.zl.server.netty.handler;
 import com.zl.common.message.NetMessage;
 import com.zl.common.message.SceneNetMessage;
 import com.zl.server.commons.Constants;
+import com.zl.server.config.ThreadPoolConfig;
+import com.zl.server.netty.anno.NetMessageInvoke;
 import com.zl.server.netty.anno.Param;
 import com.zl.server.netty.intercept.Intercept;
 import com.zl.server.netty.intercept.LoginIntercept;
@@ -22,16 +24,19 @@ import io.netty.util.Attribute;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Parameter;
+import java.util.List;
 import java.util.Map;
+
+import static com.zl.server.netty.intercept.Intercept.interceptList;
 
 @Slf4j
 public class ServiceHandler extends ChannelInboundHandlerAdapter {
 
 
-    private static TaskExecutor playerExecutor = DispatchExecutor.getExecutor(4, Constants.PlyerThreadName);
-    private static TaskExecutor sceneExecutor = DispatchExecutor.getExecutor(4, Constants.SceneThreadName);
+    private static TaskExecutor playerExecutor = ThreadPoolConfig.playerExecutor;
+    private static TaskExecutor sceneExecutor = ThreadPoolConfig.sceneExecutor;
     private static Map<Integer, Invoke> invokes = NetMessageProcessor.invokes;
-    private static Intercept intercept = Intercept.loginIntercept;
+    private static List<Intercept> intercepts = interceptList;
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
@@ -44,36 +49,46 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
         }
 
         //拦截
-        if (!intercept.preHandle(netConnection, request)) {
+        if (!preHandle(netConnection, request, invoke.getNetMessageInvoke())) {
             return;
         }
-        Integer id = getTaskId(request.getContent(), netConnection);
+        Integer id = getTaskId(invoke.getNetMessageInvoke(), netConnection);
         if (id == null) {
             exec(netConnection, invoke, request);
         } else {
-            TaskExecutor taskExecutor = selectExecutor(request.getContent());
+            TaskExecutor taskExecutor = selectExecutor(invoke.getNetMessageInvoke());
             taskExecutor.execute(new Task(id, () -> {
                 try {
                     exec(netConnection, invoke, request);
-                } catch (Exception exception) {
+                } catch (Throwable exception) {
                     log.error("exec exception " + exception);
+                    netConnection.sendMessage(new MR_Response(exception.toString()));
                 }
             }));
         }
     }
 
-    private TaskExecutor selectExecutor(Object object) {
-        if (object.getClass().isAssignableFrom(SceneNetMessage.class)) {
-            return sceneExecutor;
+    private boolean preHandle(NetConnection netConnection, Request request, NetMessageInvoke netMessageInvoke) {
+        for (Intercept intercept : intercepts) {
+            if (!intercept.preHandle(netConnection, request, netMessageInvoke)) {
+                return false;
+            }
         }
-        return playerExecutor;
+        return true;
     }
 
-    private Integer getTaskId(Object object, NetConnection netConnection) {
-        if (object.getClass().isAssignableFrom(SceneNetMessage.class)) {
-            return netConnection.getSceneId();
+    private TaskExecutor selectExecutor(NetMessageInvoke invoke) {
+        if (invoke.commandType() == Constants.NORMAL_COMMAND) {
+            return playerExecutor;
         }
-        return netConnection.getPlayerId();
+        return sceneExecutor;
+    }
+
+    private Integer getTaskId(NetMessageInvoke invoke, NetConnection netConnection) {
+        if (invoke.commandType() == Constants.NORMAL_COMMAND) {
+            return netConnection.getPlayerId();
+        }
+        return netConnection.getSceneId();
     }
 
     //执行业务
@@ -85,7 +100,7 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
         } catch (Exception e) {
             netConnection.sendMessage(new MR_Response(e.toString()));
         }
-        if (invoke.isVoid()) {
+        if (invoke.isVoid() || obj == null) {
             return;
         }
         Response response;

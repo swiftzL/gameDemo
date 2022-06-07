@@ -50,7 +50,7 @@ public class NetMessageProcessor implements BeanFactoryAware, ApplicationRunner 
                     }
                 }
                 Command command = netMessageInvoke.value();
-                invokes.put(command.getCode(), new ObjectInvoke(bean, method));
+                invokes.put(command.getCode(), new ObjectInvoke(bean, method, netMessageInvoke));
                 commandToClass.put(command.getCode(), msgClass);
             }
         });

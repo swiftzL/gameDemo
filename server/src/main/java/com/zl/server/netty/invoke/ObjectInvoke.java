@@ -1,6 +1,7 @@
 package com.zl.server.netty.invoke;
 
 
+import com.zl.server.netty.anno.NetMessageInvoke;
 import com.zl.server.netty.model.Response;
 
 import java.lang.reflect.InvocationTargetException;
@@ -14,8 +15,9 @@ public class ObjectInvoke implements Invoke {
     private Class[] args;
     private boolean returnIsResponse;
     private Parameter[] parameters;
+    private NetMessageInvoke netMessageInvoke;
 
-    public ObjectInvoke(Object obj,Method method) {
+    public ObjectInvoke(Object obj, Method method, NetMessageInvoke netMessageInvoke) {
         this.object = obj;
         this.method = method;
         Parameter[] parameters = method.getParameters();
@@ -26,11 +28,12 @@ public class ObjectInvoke implements Invoke {
         this.isVoid = method.getReturnType().getName().equals("void");
         this.returnIsResponse = method.getReturnType().equals(Response.class);
         this.parameters = parameters;
+        this.netMessageInvoke = netMessageInvoke;
     }
 
     @Override
     public Object invoke(Object... obj) throws InvocationTargetException, IllegalAccessException {
-        return method.invoke(object,obj);
+        return method.invoke(object, obj);
     }
 
     @Override
@@ -51,5 +54,9 @@ public class ObjectInvoke implements Invoke {
     @Override
     public Parameter[] getParameters() {
         return this.parameters;
+    }
+
+    public NetMessageInvoke getNetMessageInvoke() {
+        return this.netMessageInvoke;
     }
 }

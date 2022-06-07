@@ -73,6 +73,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = new Account();
         account.setUsername(req.getUsername());
         account.setPassword(req.getPassword());
+
         accountDao.save(account);
 
         netConnection.sendMessage(new MR_Response("创建用户成功"));

@@ -39,6 +39,15 @@ public class DispatchExecutor implements TaskExecutor {
         works[this.chooser.next(task.getId())].execute(task);
     }
 
+    public void executeWithFuture(Task task, CompletableFuture future) {
+        try {
+            works[this.chooser.next(task.getId())].execute(task);
+            future.complete(null);
+        } catch (Exception e) {
+            future.completeExceptionally(e);
+        }
+    }
+
     private static boolean isPowerOfTwo(int val) {
         return (val & -val) == val;
     }

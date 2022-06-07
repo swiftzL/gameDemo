@@ -1,9 +1,9 @@
-package com.zl.server.play.fight.player;
+package com.zl.server.scene.model;
 
+import com.zl.server.play.fight.model.Point;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.awt.Point;
 
 @Getter
 @Setter

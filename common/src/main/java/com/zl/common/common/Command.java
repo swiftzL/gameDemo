@@ -13,7 +13,14 @@ public enum Command {
     UseEquipment(9, "使用装备"),
     RemoveEquipment(10, "移除装备"),
     AcceptQuest(11, "接受任务"),
-    DrawAward(12, "完成任务");
+    DrawAward(12, "完成任务"),
+    CreateFightScene(13, "创建战斗场景"),
+    JoinScene(14, "加入场景"),
+    QuitScene(15, "退出场景"),
+    MovePoint(16, "移动坐标"),
+    Attack(17, "攻击目标");
+
+
     private int code;
     private String desc;
 

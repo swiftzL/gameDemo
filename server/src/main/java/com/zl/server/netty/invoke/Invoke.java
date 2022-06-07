@@ -1,5 +1,7 @@
 package com.zl.server.netty.invoke;
 
+import com.zl.server.netty.anno.NetMessageInvoke;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 
@@ -14,4 +16,7 @@ public interface Invoke {
     boolean returnIsResponse();
 
     Parameter[] getParameters();
+
+    NetMessageInvoke getNetMessageInvoke();
+
 }
