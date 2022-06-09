@@ -82,7 +82,7 @@ public class AccountServiceImpl implements AccountService {
     public void upgrade(Integer playerId, NetConnection netConnection) {
         Account account = entityCache.load(playerId);
         account.setLevel(account.getLevel() + 1);
-        applicationContext.publishEvent(UpgradeEvent.valueOf(playerId, this, null));
+        applicationContext.publishEvent(UpgradeEvent.valueOf(playerId, this, 1));
         entityCache.writeBack(account);
         netConnection.sendMessage(new MR_Response("升级完成"));
     }

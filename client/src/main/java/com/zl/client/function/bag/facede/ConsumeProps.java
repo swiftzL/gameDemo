@@ -21,20 +21,24 @@ public class ConsumeProps extends Function {
 
     @Override
     public void run() throws ExecutionException, InterruptedException {
-        System.out.println("输入背包索引1-2-3");
-        String s = scanner.nextLine();
+        System.out.println("");
+        String bagIndex = lineReader.readLine("输入背包索引1-2-3>");
         MS_ConsumProps ms_consumProps = new MS_ConsumProps();
-        String[] split = s.split("-");
+        String[] split = bagIndex.split("-");
         int[] idxs = new int[split.length];
         for (int i = 0; i < split.length; i++) {
-            idxs[i] = Integer.valueOf(split[i]);
+            try {
+                idxs[i] = Integer.parseInt(split[i]);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
         }
-        System.out.println("道具数量");
-        int num = scanner.nextInt();
-        System.out.println("道具id");
-        ms_consumProps.setModelId(scanner.nextInt());
+        String num = lineReader.readLine("道具数量>");
+        ms_consumProps.setNum(Integer.parseInt(num));
+        String s = lineReader.readLine("道具id>");
+        ms_consumProps.setModelId(Integer.parseInt(s));
         ms_consumProps.setIdxs(idxs);
-        ms_consumProps.setNum(num);
         RequestUtil.requestFuture(this.channel, getCode(), JSON.toJSONBytes(ms_consumProps));
     }
 }

@@ -39,7 +39,7 @@ public class ExperienceDrugAction implements ItemAction {
         MR_AccountInfo mr_accountInfo = new MR_AccountInfo();
         mr_accountInfo.setLevel(currentLevel);
 
-        applicationContext.publishEvent(UpgradeEvent.valueOf(playerId, this, null));
+        applicationContext.publishEvent(UpgradeEvent.valueOf(playerId, this, currentLevel));
         NetMessageUtil.sendMessage(playerId, mr_accountInfo);
     }
 

@@ -18,9 +18,15 @@ public class Attack extends Function {
 
     @Override
     public void run() throws ExecutionException, InterruptedException {
-        System.out.println("请输入攻击目标ID");
         MS_Attack req = new MS_Attack();
-        req.setAttackedPlayerId(scanner.nextInt());
+        String s = lineReader.readLine("请输入攻击目标ID>");
+        try {
+            int i = Integer.parseInt(s);
+            req.setAttackedPlayerId(i);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
         RequestUtil.requestFuture(this.channel, getCode(), JSON.toJSONString(req).getBytes());
     }
 }

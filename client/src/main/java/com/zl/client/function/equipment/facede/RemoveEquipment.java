@@ -20,9 +20,15 @@ public class RemoveEquipment extends Function {
 
     @Override
     public void run() throws ExecutionException, InterruptedException {
-        System.out.println("输入装备id");
-        MS_Equipment ms_equipment =new MS_Equipment();
-        ms_equipment.setModelId(scanner.nextInt());
+        MS_Equipment ms_equipment = new MS_Equipment();
+        String s = lineReader.readLine("输入装备id>");
+        try {
+            int id = Integer.parseInt(s);
+            ms_equipment.setModelId(id);
+        } catch (Exception e) {
+            System.out.println("输入异常");
+            return;
+        }
         RequestUtil.requestFuture(this.channel, getCode(), JSON.toJSONBytes(ms_equipment));
     }
 }

@@ -11,6 +11,6 @@ public interface QuestProcessor {
 
     QuestConfig getQuestConfig(Integer id);
 
-    void finish(Integer playerId, int questId, Quest quest, QuestStorage questModel, Object resource);
+    void finish(Integer playerId, int questId, Quest quest, QuestStorage questModel, Object resource, Object param);
 
 }

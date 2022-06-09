@@ -47,7 +47,6 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
             netConnection.sendMessage(new MR_Response("指令错误"));
             return;
         }
-
         //拦截
         if (!preHandle(netConnection, request, invoke.getNetMessageInvoke())) {
             return;
@@ -108,7 +107,7 @@ public class ServiceHandler extends ChannelInboundHandlerAdapter {
             response = (Response) obj;
         } else {
             response = new Response();
-            response.setStatusCode(200);
+            response.setCommand(msg.getCommand());
             response.setContent(obj);
         }
         response.setRequestId(msg.getRequestId());

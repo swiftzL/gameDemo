@@ -15,7 +15,7 @@ public class ResponseEncoder extends MessageToByteEncoder<Response> {
     protected void encode(ChannelHandlerContext ctx, Response msg, ByteBuf out) throws Exception {
         out.writeInt(CodeConstants.FLAG);
         out.writeInt(msg.getRequestId());
-        out.writeInt(msg.getStatusCode());
+        out.writeInt(msg.getCommand());
         String s = JSON.toJSONString(msg.getContent());
         out.writeInt(s.getBytes().length);
         out.writeBytes(s.getBytes());

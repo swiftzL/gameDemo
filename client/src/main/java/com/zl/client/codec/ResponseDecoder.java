@@ -15,19 +15,19 @@ public class ResponseDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        if (in.readableBytes()<16) {
+        if (in.readableBytes() < 16) {
             return;
         }
         in.markReaderIndex();
-        if(Constants.FLAG!=in.readInt()){
+        if (Constants.FLAG != in.readInt()) {
             ctx.channel().close();
             log.error("错误请求");
             return;
         }
         int requestId = in.readInt();
-        int statusCode = in.readInt();
+        int command = in.readInt();
         int len = in.readInt();
-        if(in.readableBytes()<len){
+        if (in.readableBytes() < len) {
             in.resetReaderIndex();
             return;
         }
@@ -35,7 +35,7 @@ public class ResponseDecoder extends ByteToMessageDecoder {
         in.readBytes(bytes);
         Response response = new Response();
         response.setRequestId(requestId);
-        response.setStatusCode(statusCode);
+        response.setCommand(command);
         response.setContent(bytes);
         out.add(response);
     }

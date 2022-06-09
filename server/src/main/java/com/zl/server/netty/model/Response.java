@@ -9,17 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Response {
     private int requestId;
-    private int statusCode;
+    private int command;
     private Object content;
-
-
-    public static Response err(String message) {
-        return new Response(0,500, message.getBytes());
-    }
-
-    public static Response success(String message) {
-        return new Response(0, 200, message.getBytes());
-    }
-
 
 }

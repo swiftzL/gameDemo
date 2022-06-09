@@ -2,7 +2,7 @@ package com.zl.server.play.quest.condition;
 
 import com.zl.server.play.quest.model.QuestStorage;
 
-public interface QuestCondition {
+public interface QuestCondition<T> {
 
     boolean verify(Integer playerId, QuestStorage questStorage, Object resource);
 
@@ -12,5 +12,5 @@ public interface QuestCondition {
 
     int getMaxCount();//最大进度
 
-    void updateProgress(Integer playerId, int questId);//更新进度
+    void updateProgress(Integer playerId, int questId,T param);//更新进度
 }

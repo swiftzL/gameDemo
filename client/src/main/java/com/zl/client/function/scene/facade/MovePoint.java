@@ -20,10 +20,13 @@ public class MovePoint extends Function {
     @Override
     public void run() throws ExecutionException, InterruptedException {
         MS_MovePoint req = new MS_MovePoint();
-        System.out.println("请输入坐标x-y");
-        String s = scanner.nextLine();
+        String s = lineReader.readLine("请输入坐标x-y>");
         String[] split = s.split("-");
-        req.setPoint(new Point(Integer.parseInt(split[0]),Integer.parseInt(split[1])));
+        if (split.length != 2) {
+            System.out.println("输入异常");
+            return;
+        }
+        req.setPoint(new Point(Integer.parseInt(split[0]), Integer.parseInt(split[1])));
         RequestUtil.requestFuture(this.channel, getCode(), JSON.toJSONString(req).getBytes());
     }
 }

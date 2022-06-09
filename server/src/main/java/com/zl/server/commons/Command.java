@@ -1,6 +1,7 @@
 package com.zl.server.commons;
 
 public enum Command {
+    Heartbeat(0, "心跳"),
     Login(1, "用户登录"),
     CreateAccount(2, "用户注册"),
     AccountInfo(3, "用户信息"),

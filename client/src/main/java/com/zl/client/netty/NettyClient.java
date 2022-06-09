@@ -14,6 +14,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -39,13 +40,10 @@ public class NettyClient {
                 .remoteAddress(new InetSocketAddress(host, port)).handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
-                        ch.pipeline().addLast(new ResponseDecoder()).addLast(new RequestEncoder()).addLast(new ClientHandler());
+                        ch.pipeline().addLast(new ResponseDecoder()).addLast(new RequestEncoder()).addLast(new IdleStateHandler(15, 15, 12)).addLast(new ClientHandler());
                     }
                 });
-
         Channel channel = bootstrap.connect().sync().channel();
-//        Request request = RequestUtil.request(1, "dd".getBytes());
-//        channel.writeAndFlush(request);
         return channel;
     }
 }

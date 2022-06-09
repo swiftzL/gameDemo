@@ -69,7 +69,7 @@ public class QuestServiceImpl implements QuestService {
             QuestProcessor questProcessor = getQuestProcessor(questStorage.getTaskType());
             QuestConfig questConfig = questProcessor.getQuestConfig(questStorage.getTaskId());
             if (questConfig != null && questConfig.getFinishCondition().getOperationType() == questEvent.getType()) {
-                questProcessor.finish(playerId, questStorage.getTaskId(), quest, questStorage, questEvent.getParams());
+                questProcessor.finish(playerId, questStorage.getTaskId(), quest, questStorage, questEvent.getParams(),questEvent.getParams());
             }
         }
     }

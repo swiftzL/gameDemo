@@ -18,9 +18,13 @@ public class CreateScene extends Function {
 
     @Override
     public void run() throws ExecutionException, InterruptedException {
-        System.out.println("请输入边界和场景最大人数 3-5-5");
-        String s = scanner.nextLine();
+        System.out.println("");
+        String s = lineReader.readLine("请输入边界和场景最大人数 3-5-5>");
         String[] split = s.split("-");
+        if (split.length != 3) {
+            System.out.println("输入异常");
+            return;
+        }
         MS_CreateFightScene req = new MS_CreateFightScene();
         req.setDown(Integer.parseInt(split[0]));
         req.setRight(Integer.parseInt(split[1]));

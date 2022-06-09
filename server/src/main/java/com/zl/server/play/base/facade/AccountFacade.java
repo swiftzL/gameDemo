@@ -6,6 +6,8 @@ import com.zl.server.netty.anno.NetMessageInvoke;
 import com.zl.server.commons.Command;
 import com.zl.server.netty.anno.Param;
 import com.zl.server.netty.connection.NetConnection;
+import com.zl.server.netty.model.Request;
+import com.zl.server.netty.model.Response;
 import com.zl.server.play.base.packet.MR_Response;
 import com.zl.server.play.base.packet.MS_Account;
 import com.zl.server.play.base.service.AccountService;
@@ -40,5 +42,10 @@ public class AccountFacade {
     @NetMessageInvoke(Command.LOGOUT)
     public void logout(@Param("id") Integer playerId, NetConnection netConnection) {
         accountService.logout(playerId, netConnection);
+    }
+
+    @NetMessageInvoke(Command.Heartbeat)
+    public void heartBeat(Request request, NetConnection netConnection) {
+        netConnection.sendMessage(new Response(request.getRequestId(), com.zl.common.common.Command.Heartbeat.getCode(), null));
     }
 }

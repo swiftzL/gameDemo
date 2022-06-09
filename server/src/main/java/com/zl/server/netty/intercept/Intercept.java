@@ -10,5 +10,6 @@ import java.util.List;
 
 public interface Intercept {
     List<Intercept> interceptList = Arrays.asList(new LoginIntercept(), new SceneIntercept());
+
     boolean preHandle(NetConnection netConnection, Request request, NetMessageInvoke netMessageInvoke);
 }

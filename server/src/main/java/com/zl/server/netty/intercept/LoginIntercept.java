@@ -13,7 +13,7 @@ public class LoginIntercept implements Intercept {
     @Override
     public boolean preHandle(NetConnection netConnection, Request request, NetMessageInvoke netMessageInvoke) {
         log.info("{}", request);
-        if (request.getCommand() == Command.Login.getCode() || netConnection.hashAttr("id")) {
+        if (request.getCommand() == Command.Login.getCode() || netConnection.hashAttr("id") || request.getCommand() == Command.Heartbeat.getCode()) {
             return true;
         }
         netConnection.sendMessage(new MR_Response("当前用户没有登录"));

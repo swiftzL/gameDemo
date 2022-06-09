@@ -20,12 +20,15 @@ public class PutProps extends Function {
 
     @Override
     public void run() throws ExecutionException, InterruptedException {
-        System.out.println("输入道具编号-道具数量");
-        String s = scanner.nextLine();
+        String s = lineReader.readLine("输入道具编号-道具数量>");
         MS_Props ms_props = new MS_Props();
         String[] split = s.split("-");
-        ms_props.setPropsId(Integer.valueOf(split[0]));
-        ms_props.setNum(Integer.valueOf(split[1]));
+        if (split.length != 2) {
+            System.out.println("输入异常");
+            return;
+        }
+        ms_props.setPropsId(Integer.parseInt(split[0]));
+        ms_props.setNum(Integer.parseInt(split[1]));
         RequestUtil.requestFuture(this.channel, getCode(), JSON.toJSONString(ms_props).getBytes());
     }
 }

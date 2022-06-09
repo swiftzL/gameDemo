@@ -33,10 +33,10 @@ public class MainQuestProcessor implements QuestProcessor {
     }
 
     @Override
-    public void finish(Integer playerId, int questId, Quest quest, QuestStorage questStorage, Object resource) {
+    public void finish(Integer playerId, int questId, Quest quest, QuestStorage questStorage, Object resource, Object param) {
         QuestConfig questConfig = questResourceMap.get(questId);
         QuestCondition finishCondition = questConfig.getFinishCondition();
-        finishCondition.updateProgress(playerId, questId);
+        finishCondition.updateProgress(playerId, questId, param);
         if (finishCondition.verify(playerId, questStorage, resource)) {
             QuestAction questAction = questConfig.getQuestAction();
             questAction.action(questStorage);

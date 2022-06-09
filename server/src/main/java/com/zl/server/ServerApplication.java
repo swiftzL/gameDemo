@@ -10,11 +10,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @SpringBootApplication
 @EnableConfigurationProperties
 public class ServerApplication  {
-
-    @Autowired
-    private EntityManagerContext entityManagerContext;
-
-
+    
     public static void main(String[] args) throws InterruptedException {
         NettyServer nettyServer = SpringApplication.run(ServerApplication.class, args).getBean(NettyServer.class);
         nettyServer.run();

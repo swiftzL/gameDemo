@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class LoginQuestCondition implements QuestCondition {
+public class LoginQuestCondition implements QuestCondition<Integer> {
 
     private int type;
     private int count;
@@ -34,7 +34,7 @@ public class LoginQuestCondition implements QuestCondition {
     }
 
     @Override
-    public void updateProgress(Integer playerId, int questId) {
+    public void updateProgress(Integer playerId, int questId, Integer param) {
         QuestService questService = GameContext.getQuestService();
         questService.updateProgress(playerId, questId, 1);
     }

@@ -19,11 +19,15 @@ public class JoinScene extends Function {
 
     @Override
     public void run() throws ExecutionException, InterruptedException {
-        System.out.println("请输入场景Id");
         MS_JoinFightScene req = new MS_JoinFightScene();
-        req.setSceneId(scanner.nextInt());
-        System.out.println(req);
-        System.out.println(JSON.toJSONString(req));
+        try {
+            String s = lineReader.readLine("请输入场景Id");
+            int i = Integer.parseInt(s);
+            req.setSceneId(i);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
         RequestUtil.requestFuture(this.channel, getCode(), JSON.toJSONString(req).getBytes());
 
     }

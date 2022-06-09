@@ -41,8 +41,10 @@ public class DispatchExecutor implements TaskExecutor {
 
     public void executeWithFuture(Task task, CompletableFuture future) {
         try {
+            task.warp(() -> {
+                future.complete(null);
+            });
             works[this.chooser.next(task.getId())].execute(task);
-            future.complete(null);
         } catch (Exception e) {
             future.completeExceptionally(e);
         }

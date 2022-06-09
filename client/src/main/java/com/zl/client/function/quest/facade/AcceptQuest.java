@@ -18,9 +18,15 @@ public class AcceptQuest extends Function {
 
     @Override
     public void run() throws ExecutionException, InterruptedException {
-        System.out.println("输入任务id");
+        String s = lineReader.readLine("输入任务id>");
         MS_Quest ms_quest = new MS_Quest();
-        ms_quest.setQuestId(scanner.nextInt());
+        try {
+            int i = Integer.parseInt(s);
+            ms_quest.setQuestId(i);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
         RequestUtil.requestFuture(this.channel, getCode(), JSON.toJSONString(ms_quest).getBytes());
     }
 }

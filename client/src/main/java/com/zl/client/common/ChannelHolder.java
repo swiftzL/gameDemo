@@ -18,7 +18,6 @@ public class ChannelHolder {
     }
 
     public static void completable(Integer requestId, Object o) {
-
         //remove the requestId and return future
         CompletableFuture completableFuture = responseMap.remove(requestId);
         if (completableFuture != null) {

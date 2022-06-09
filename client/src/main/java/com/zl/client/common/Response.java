@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class Response {
 
     private int requestId;
-    private int statusCode;
+    private int command;
     private byte[] content;
 
     public static Response err(String message) {
